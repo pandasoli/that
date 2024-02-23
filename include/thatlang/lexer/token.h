@@ -10,14 +10,28 @@ enum TokenKind {
 	EOFTk,
 
 	// Symbols
-	PlusTk, DashTk,
-	AsteriskTk, SlashTk,
-	OpenParenTk, CloseParenTk,
-	EqualsTk,
+	PlusTk, DashTk, SlashTk,
 
-	// Literal values
+	CommaTk,
+	OpenBraceTk, CloseBraceTk,
+	OpenParenTk, CloseParenTk,
+
+	LessThanTk, GreaterThanTk,
+	EqualsToTk, DiffTk,
+
+	AmpersandTk, AsteriskTk,
+	PipeTk, EqualsTk,
+
+	// Literals
 	IdentifierTk,
-	IntTk, FloatTk
+	IntTk, FloatTk,
+
+	// Keywords
+	ImportTk, PubTk,
+	LocalTk, TypeTk, AsTk,
+	NotTk,
+	AndTk, OrTk,
+	FnTk, ReturnTk
 };
 
 typedef struct Token Token;

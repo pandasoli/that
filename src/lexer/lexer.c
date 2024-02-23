@@ -1,3 +1,4 @@
+#include <string.h>
 #include "lexer/lexer.h"
 #include "lexer/token.h"
 #include "globl.h"
@@ -19,13 +20,41 @@ static Token lex(Lexer *self) {
 	switch (CURRENT) {
 		case   0: NEXT; kind = EOFTk; break;
 
+		// Symbols
 		case '+': NEXT; kind = PlusTk; break;
 		case '-': NEXT; kind = DashTk; break;
-		case '*': NEXT; kind = AsteriskTk; break;
 		case '/': NEXT; kind = SlashTk; break;
+
+		case ',': NEXT; kind = CommaTk; break;
+		case '{': NEXT; kind = OpenBraceTk; break;
+		case '}': NEXT; kind = CloseBraceTk; break;
 		case '(': NEXT; kind = OpenParenTk; break;
 		case ')': NEXT; kind = CloseParenTk; break;
-		case '=': NEXT; kind = EqualsTk; break;
+
+		case '<': NEXT; kind = LessThanTk; break;
+		case '>': NEXT; kind = GreaterThanTk; break;
+
+		case '=': {
+			kind = EqualsTk;
+			NEXT;
+
+			if (CURRENT == '=') {
+				kind = EqualsToTk;
+				NEXT;
+			}
+		} break;
+		case '!': {
+			NEXT;
+
+			if (CURRENT == '=') {
+				kind = DiffTk;
+				NEXT;
+			}
+		} break;
+
+		case '&': NEXT; kind = AmpersandTk; break;
+		case '*': NEXT; kind = AsteriskTk; break;
+		case '|': NEXT; kind = PipeTk; break;
 
 		default:
 			/* Numbers support:
@@ -55,6 +84,21 @@ static Token lex(Lexer *self) {
 
 	    	while (IS_ID(CURRENT) || IS_DEC(CURRENT))
   	      NEXT;
+
+				// Keywords
+				size_t len = self->pos - pos;
+				size_t t;
+
+				if      (len == (t = 6) && strncmp(literal, "import", t) == 0) kind = ImportTk;
+				else if (len == (t = 3) && strncmp(literal, "pub",    t) == 0) kind = PubTk;
+				else if (len == (t = 5) && strncmp(literal, "local",  t) == 0) kind = LocalTk;
+				else if (len == (t = 4) && strncmp(literal, "type",   t) == 0) kind = TypeTk;
+				else if (len == (t = 2) && strncmp(literal, "as",     t) == 0) kind = AsTk;
+				else if (len == (t = 3) && strncmp(literal, "not",    t) == 0) kind = NotTk;
+				else if (len == (t = 3) && strncmp(literal, "and",    t) == 0) kind = AndTk;
+				else if (len == (t = 2) && strncmp(literal, "or",     t) == 0) kind = OrTk;
+				else if (len == (t = 2) && strncmp(literal, "fn",     t) == 0) kind = FnTk;
+				else if (len == (t = 6) && strncmp(literal, "return", t) == 0) kind = ReturnTk;
 			}
 
 			// Just skip Unknown
