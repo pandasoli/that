@@ -15,10 +15,25 @@ typedef struct {
 	Token *expected;
 } Test;
 
+static void print_literal(char *literal) {
+	printf("- \e[2m\"");
+
+	size_t i = 0;
+	unsigned char ch = literal[i];
+
+	for (; literal[i] != 0; ch = literal[++i]) {
+		if      (ch == '\n') printf("\e[m\\n\e[2m");
+		else if (ch == '\t') printf("\e[m\\t\e[2m");
+		else    putchar(ch);
+	}
+
+	printf("\"\e[m\n");
+}
+
 static void test_tokens(Lexer *lex, Token *tokens);
 
 static void test(Test test) {
-	printf("- \e[2m\"%s\"\e[0m\n", test.literal);
+	print_literal(test.literal);
 
 	Lexer lex;
 	ck_assert(lexer_init(test.literal, &lex) == 0);
@@ -50,8 +65,6 @@ static void test_tokens(Lexer *lex, Token *tokens) {
 		expected_i++;
 	}
 	while (actual.kind != EOFTk && expected.kind != EOFTk);
-
-	// ck_assert_msg(actual.kind == EOFTk && expected.kind == EOFTk, "Assert tokens' kind at the end, both expected to be EOF");
 }
 
 /*
@@ -329,6 +342,79 @@ START_TEST (test_keywords) {
 }
 END_TEST
 
+START_TEST (test_comments) {
+	puts("--- test_comments ---");
+
+	char literal_1[] = "-- abc";
+	Token expected_1[] = {
+		new_token(EOFTk, literal_1, 6, 1)
+	};
+
+	char literal_2[] = "- -- this is a dash token :)";
+	Token expected_2[] = {
+		new_token(DashTk, literal_2, 0, 1),
+		new_token(EOFTk, literal_2, 28, 1)
+	};
+
+	char literal_3[] = "abc == 2 {\n-- Do something here idk\n}";
+	Token expected_3[] = {
+		new_token(IdentifierTk, literal_3, 0, 3),
+		new_token(EqualsToTk, literal_3, 4, 2),
+		new_token(IntTk, literal_3, 7, 1),
+		new_token(OpenBraceTk, literal_3, 9, 1),
+		new_token(CloseBraceTk, literal_3, 36, 1),
+		new_token(EOFTk, literal_2, 37, 1)
+	};
+
+	char literal_4[] = "-- +-/,{}()<>===!=&*|";
+	Token expected_4[] = {
+		new_token(EOFTk, literal_2, 21, 1)
+	};
+
+	Test tests[] = {
+		{literal_1, expected_1},
+		{literal_2, expected_2},
+		{literal_3, expected_3},
+		{literal_4, expected_4},
+		{}
+	};
+
+	test_many(tests);
+}
+END_TEST
+
+START_TEST (test_whitespaces) {
+	puts("--- test_whitespaces ---");
+
+	char literal_1[] = "\t-\t";
+	Token expected_1[] = {
+		new_token(DashTk, literal_1, 1, 1),
+		new_token(EOFTk, literal_1, 3, 1)
+	};
+
+	char literal_2[] = "\nab\n";
+	Token expected_2[] = {
+		new_token(IdentifierTk, literal_2, 1, 2),
+		new_token(EOFTk, literal_2, 4, 1)
+	};
+
+	char literal_3[] = " 123 ";
+	Token expected_3[] = {
+		new_token(IntTk, literal_3, 1, 3),
+		new_token(EOFTk, literal_3, 5, 1)
+	};
+
+	Test tests[] = {
+		{literal_1, expected_1},
+		{literal_2, expected_2},
+		{literal_3, expected_3},
+		{}
+	};
+
+	test_many(tests);
+}
+END_TEST
+
 /*
  * Main
  */
@@ -340,6 +426,8 @@ Suite *lexer_suite() {
 	tcase_add_test(tc_core, test_numbers);
 	tcase_add_test(tc_core, test_identifiers);
 	tcase_add_test(tc_core, test_keywords);
+	tcase_add_test(tc_core, test_comments);
+	tcase_add_test(tc_core, test_whitespaces);
 
 	Suite *s = suite_create("Lexer");
 	suite_add_tcase(s, tc_core);

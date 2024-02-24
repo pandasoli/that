@@ -11,7 +11,11 @@
 
 
 static Token lex(Lexer *self) {
-	while (CURRENT == ' ') NEXT;
+	while (
+		CURRENT == ' ' ||
+		CURRENT == '\t' ||
+		CURRENT == '\n'
+	) NEXT;
 
 	TokenKind kind = UnknownTk;
 	size_t pos = self->pos;
@@ -22,7 +26,19 @@ static Token lex(Lexer *self) {
 
 		// Symbols
 		case '+': NEXT; kind = PlusTk; break;
-		case '-': NEXT; kind = DashTk; break;
+		case '-': {
+				NEXT;
+
+				// Comment
+				if (CURRENT == '-') {
+					while (CURRENT != '\n' && CURRENT != 0)
+						NEXT;
+
+					return lex(self);
+				}
+				else
+					kind = DashTk;
+		} break;
 		case '/': NEXT; kind = SlashTk; break;
 
 		case ',': NEXT; kind = CommaTk; break;
