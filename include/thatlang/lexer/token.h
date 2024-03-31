@@ -3,35 +3,38 @@
 #include <stddef.h>
 #include "diags/span.h"
 
+#define TOKEN_KINDS_LIST(X)    \
+		X(Unknown)                 \
+		X(EOF)                     \
+															 \
+		/* Symbols */              \
+		X(Plus) X(Dash) X(Slash)   \
+		X(Comma)                   \
+		X(OpenBrace) X(CloseBrace) \
+		X(OpenParen) X(CloseParen) \
+															 \
+		X(LessThan) X(GreaterThan) \
+		X(EqualsTo) X(Diff)        \
+															 \
+		X(Ampersand) X(Asterisk)   \
+		X(Pipe) X(Equals)          \
+															 \
+		/* Literals */             \
+		X(Identifier)              \
+		X(Int) X(Float)            \
+															 \
+		/* Keywords */             \
+		X(Import) X(Pub)           \
+		X(Local) X(Type) X(As)     \
+		X(Not)                     \
+		X(And) X(Or)               \
+		X(Fn) X(Return)
 
 typedef enum TokenKind TokenKind;
 enum TokenKind {
-	UnknownTk,
-	EOFTk,
-
-	// Symbols
-	PlusTk, DashTk, SlashTk,
-
-	CommaTk,
-	OpenBraceTk, CloseBraceTk,
-	OpenParenTk, CloseParenTk,
-
-	LessThanTk, GreaterThanTk,
-	EqualsToTk, DiffTk,
-
-	AmpersandTk, AsteriskTk,
-	PipeTk, EqualsTk,
-
-	// Literals
-	IdentifierTk,
-	IntTk, FloatTk,
-
-	// Keywords
-	ImportTk, PubTk,
-	LocalTk, TypeTk, AsTk,
-	NotTk,
-	AndTk, OrTk,
-	FnTk, ReturnTk
+#define X(kind) kind ## Tk,
+	TOKEN_KINDS_LIST(X)
+#undef X
 };
 
 typedef struct Token Token;

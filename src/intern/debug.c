@@ -37,7 +37,7 @@ void print_node(Node *node, char *last_indent) {
 		case UnaryNk:
 			puts("Unary [");
 
-			printf("%s\e[3m", indent);
+			printf("%s", indent);
 			print_token(node->unary.op);
 			printf("\n\e[0m");
 
@@ -49,11 +49,14 @@ void print_node(Node *node, char *last_indent) {
 		case BinaryNk:
 			puts("Binary [");
 
+			printf("%s", indent);
 			print_node(node->binary.left, indent);
 
+			printf("%s\e[3m", indent);
 			print_token(node->binary.op);
-			putchar('\n');
+			printf("\n\e[0m");
 
+			printf("%s", indent);
 			print_node(node->binary.right, indent);
 
 			printf("%s]\n", last_indent);

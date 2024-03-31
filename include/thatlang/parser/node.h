@@ -3,14 +3,18 @@
 #include "diags/bag.h"
 #include "lexer/token.h"
 
+#define NODE_KINDS_LIST(X) \
+	X(Binary)                \
+	X(Unary)                 \
+	X(Number)                \
+	X(VarCall)               \
+	X(VarDeclaration)        \
+	X(Assignment)
 
 typedef enum {
-	BinaryNk,
-	UnaryNk,
-	NumberNk,
-	VarCallNk,
-	VarDeclarationNk,
-	AssignmentNk
+#define X(kind) kind ## Nk,
+	NODE_KINDS_LIST(X)
+#undef X
 } NodeKind;
 
 typedef struct Node Node;
