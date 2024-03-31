@@ -1,19 +1,19 @@
 #pragma once
 
-#include "diags/span.h"
-#include "globl.h"
+#include <thatlang/diags/span.h>
+#include <thatlang/globl.h>
 
 
-typedef struct DiagBag DiagBag;
+typedef struct th_DiagBag thDiagBag;
 
-typedef struct Diag Diag;
-struct Diag {
-	TextSpan span;
+typedef struct th_Diag thDiag;
+struct th_Diag {
+	thTextSpan span;
 	char *msg;
 
-	void (*free)(Diag *self);
+	void (*free)(thDiag *self);
 
-	Diag *next;
+	thDiag *next;
 };
 
-ERR new_diag(TextSpan span, char *msg, DiagBag *bag, Diag **diag);
+thERR th_diag_create(thTextSpan span, char *msg, thDiagBag *bag, thDiag **diag);

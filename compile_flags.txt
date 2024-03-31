@@ -1,2 +1,4 @@
--Iinclude/thatlang
--Iinclude/intern
+-Iinclude
+-std=c18
+-Wall
+-Wextra

@@ -1,7 +1,8 @@
 #pragma once
 
+#include <thatlang/diags/span.h>
+
 #include <stddef.h>
-#include "diags/span.h"
 
 #define TOKEN_KINDS_LIST(X)    \
 		X(Unknown)                 \
@@ -30,18 +31,18 @@
 		X(And) X(Or)               \
 		X(Fn) X(Return)
 
-typedef enum TokenKind TokenKind;
-enum TokenKind {
+typedef enum thTokenKind thTokenKind;
+enum thTokenKind {
 #define X(kind) kind ## Tk,
 	TOKEN_KINDS_LIST(X)
 #undef X
 };
 
-typedef struct Token Token;
-struct Token {
-	TokenKind kind;
+typedef struct thToken thToken;
+struct thToken {
+	thTokenKind kind;
 	char *literal;
-	TextSpan span;
+	thTextSpan span;
 };
 
-Token new_token(TokenKind kind, char *literal, size_t pos, size_t len);
+thToken th_token_create(thTokenKind kind, char *literal, size_t pos, size_t len);

@@ -1,15 +1,15 @@
 #pragma once
 
-#include "token.h"
-#include "globl.h"
+#include <thatlang/lexer/token.h>
+#include <thatlang/globl.h>
 
 
-typedef struct Lexer Lexer;
-struct Lexer {
+typedef struct thLexer thLexer;
+struct thLexer {
 	char *text;
 	size_t pos;
 
-	Token (*lex)(Lexer *self);
+	thToken (*lex)(thLexer *self);
 };
 
-ERR lexer_init(char *text, Lexer *lexer);
+thERR th_lexer_init(char *text, thLexer *lexer);

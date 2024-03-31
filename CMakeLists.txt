@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.28.1)
 
 project(ThatLang VERSION 1.0.0)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -ggdb")
+set(CMAKE_C_COMPILER /usr/bin/gcc)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -ggdb -std=c18")
 set(CMAKE_CTEST_ARGUMENTS "--output-on-failure")
 
 add_library(
@@ -14,9 +15,6 @@ add_library(
 	src/lexer/lexer.c
 	src/lexer/token.c
 
-	src/parser/parser.c
-	src/parser/node.c
-
 	src/intern/utils.c
 	src/intern/debug.c)
 
@@ -26,7 +24,15 @@ target_link_libraries(
 
 target_include_directories(
 	th
-	PUBLIC include/thatlang include/intern)
+	PUBLIC include)
+
+install(
+	DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/thatlang
+	DESTINATION /usr/include)
+
+install (
+	TARGETS th
+	DESTINATION /usr/lib64)
 
 # -- Tests --
 enable_testing()
@@ -48,8 +54,3 @@ function(mk_test name command)
 endfunction()
 
 mk_test("Test Lexer" "check_lexer")
-mk_test("Test Parser" "check_parser")
-
-# This test is used to manually test what
-# you're implementing with no need of more detailed tests.
-mk_test("Temp test file" "temp")

@@ -1,9 +1,10 @@
+#include <thatlang/lexer/lexer.h>
+#include <thatlang/lexer/token.h>
+#include <intern/debug.h>
+#include <intern/utils.h>
+
 #include <check.h>
 #include <stdio.h>
-#include "lexer/lexer.h"
-#include "lexer/token.h"
-#include "debug.h"
-#include "utils.h"
 
 
 /*
@@ -12,7 +13,7 @@
 
 typedef struct {
 	char *literal;
-	Token *expected;
+	thToken *expected;
 } Test;
 
 static void print_literal(char *literal) {
@@ -30,13 +31,13 @@ static void print_literal(char *literal) {
 	printf("\"\e[m\n");
 }
 
-static void test_tokens(Lexer *lex, Token *tokens);
+static void test_tokens(thLexer *lex, thToken *tokens);
 
 static void test(Test test) {
 	print_literal(test.literal);
 
-	Lexer lex;
-	ck_assert(lexer_init(test.literal, &lex) == 0);
+	thLexer lex;
+	ck_assert(th_lexer_init(test.literal, &lex) == 0);
 
 	test_tokens(&lex, test.expected);
 }
@@ -50,8 +51,8 @@ static void test_many(Test *tests) {
  * Testing
  */
 
-static void test_tokens(Lexer *lex, Token *tokens) {
-	Token actual, expected;
+static void test_tokens(thLexer *lex, thToken *tokens) {
+	thToken actual, expected;
 	size_t expected_i = 0;
 
 	do {
@@ -75,30 +76,30 @@ START_TEST (test_symbols) {
 	puts("--- test_symbols ---");
 
 	char literal_1[] = "+-/,{}()<>&*|";
-	Token expected_1[] = {
-		new_token(PlusTk, literal_1, 0, 1),
-		new_token(DashTk, literal_1, 1, 1),
-		new_token(SlashTk, literal_1, 2, 1),
-		new_token(CommaTk, literal_1, 3, 1),
-		new_token(OpenBraceTk, literal_1, 4, 1),
-		new_token(CloseBraceTk, literal_1, 5, 1),
-		new_token(OpenParenTk, literal_1, 6, 1),
-		new_token(CloseParenTk, literal_1, 7, 1),
-		new_token(LessThanTk, literal_1, 8, 1),
-		new_token(GreaterThanTk, literal_1, 9, 1),
-		new_token(AmpersandTk, literal_1, 10, 1),
-		new_token(AsteriskTk, literal_1, 11, 1),
-		new_token(PipeTk, literal_1, 12, 1),
-		new_token(EOFTk, literal_1, 13, 1)
+	thToken expected_1[] = {
+		th_token_create(PlusTk, literal_1, 0, 1),
+		th_token_create(DashTk, literal_1, 1, 1),
+		th_token_create(SlashTk, literal_1, 2, 1),
+		th_token_create(CommaTk, literal_1, 3, 1),
+		th_token_create(OpenBraceTk, literal_1, 4, 1),
+		th_token_create(CloseBraceTk, literal_1, 5, 1),
+		th_token_create(OpenParenTk, literal_1, 6, 1),
+		th_token_create(CloseParenTk, literal_1, 7, 1),
+		th_token_create(LessThanTk, literal_1, 8, 1),
+		th_token_create(GreaterThanTk, literal_1, 9, 1),
+		th_token_create(AmpersandTk, literal_1, 10, 1),
+		th_token_create(AsteriskTk, literal_1, 11, 1),
+		th_token_create(PipeTk, literal_1, 12, 1),
+		th_token_create(EOFTk, literal_1, 13, 1)
 	};
 
 	char literal_2[] = "===!==";
-	Token expected_2[] = {
-		new_token(EqualsToTk, literal_2, 0, 2),
-		new_token(EqualsTk, literal_2, 2, 1),
-		new_token(DiffTk, literal_2, 3, 2),
-		new_token(EqualsTk, literal_2, 5, 1),
-		new_token(EOFTk, literal_2, 6, 1)
+	thToken expected_2[] = {
+		th_token_create(EqualsToTk, literal_2, 0, 2),
+		th_token_create(EqualsTk, literal_2, 2, 1),
+		th_token_create(DiffTk, literal_2, 3, 2),
+		th_token_create(EqualsTk, literal_2, 5, 1),
+		th_token_create(EOFTk, literal_2, 6, 1)
 	};
 
 	Test tests[] = {
@@ -115,59 +116,59 @@ START_TEST (test_numbers) {
 	puts("--- test_numbers ---");
 
 	char literal_1[] = "0123456789";
-	Token expected_1[] = {
-		new_token(IntTk, literal_1, 0, 10),
-		new_token(EOFTk, literal_1, 10, 1)
+	thToken expected_1[] = {
+		th_token_create(IntTk, literal_1, 0, 10),
+		th_token_create(EOFTk, literal_1, 10, 1)
 	};
 
 	char literal_2[] = "123456789012345678890";
-	Token expected_2[] = {
-		new_token(IntTk, literal_2, 0, 21),
-		new_token(EOFTk, literal_2, 21, 1)
+	thToken expected_2[] = {
+		th_token_create(IntTk, literal_2, 0, 21),
+		th_token_create(EOFTk, literal_2, 21, 1)
 	};
 
 	char literal_3[] = "0";
-	Token expected_3[] = {
-		new_token(IntTk, literal_3, 0, 1),
-		new_token(EOFTk, literal_3, 1, 1)
+	thToken expected_3[] = {
+		th_token_create(IntTk, literal_3, 0, 1),
+		th_token_create(EOFTk, literal_3, 1, 1)
 	};
 
 	char literal_4[] = "1";
-	Token expected_4[] = {
-		new_token(IntTk, literal_4, 0, 1),
-		new_token(EOFTk, literal_4, 1, 1)
+	thToken expected_4[] = {
+		th_token_create(IntTk, literal_4, 0, 1),
+		th_token_create(EOFTk, literal_4, 1, 1)
 	};
 
 	char literal_5[] = "23";
-	Token expected_5[] = {
-		new_token(IntTk, literal_5, 0, 2),
-		new_token(EOFTk, literal_5, 2, 1)
+	thToken expected_5[] = {
+		th_token_create(IntTk, literal_5, 0, 2),
+		th_token_create(EOFTk, literal_5, 2, 1)
 	};
 
 	char literal_6[] = "8";
-	Token expected_6[] = {
-		new_token(IntTk, literal_6, 0, 1),
-		new_token(EOFTk, literal_6, 1, 1)
+	thToken expected_6[] = {
+		th_token_create(IntTk, literal_6, 0, 1),
+		th_token_create(EOFTk, literal_6, 1, 1)
 	};
 
 	char literal_7[] = ".123";
-	Token expected_7[] = {
-		new_token(UnknownTk, literal_7, 0, 1),
-		new_token(IntTk, literal_7, 1, 3),
-		new_token(EOFTk, literal_7, 4, 1)
+	thToken expected_7[] = {
+		th_token_create(UnknownTk, literal_7, 0, 1),
+		th_token_create(IntTk, literal_7, 1, 3),
+		th_token_create(EOFTk, literal_7, 4, 1)
 	};
 
 	char literal_8[] = "123.456";
-	Token expected_8[] = {
-		new_token(FloatTk, literal_8, 0, 7),
-		new_token(EOFTk, literal_8, 7, 1)
+	thToken expected_8[] = {
+		th_token_create(FloatTk, literal_8, 0, 7),
+		th_token_create(EOFTk, literal_8, 7, 1)
 	};
 
 	char literal_9[] = ".1.2";
-	Token expected_9[] = {
-		new_token(UnknownTk, literal_9, 0, 1),
-		new_token(FloatTk, literal_9, 1, 3),
-		new_token(EOFTk, literal_9, 4, 1)
+	thToken expected_9[] = {
+		th_token_create(UnknownTk, literal_9, 0, 1),
+		th_token_create(FloatTk, literal_9, 1, 3),
+		th_token_create(EOFTk, literal_9, 4, 1)
 	};
 
 	Test tests[] = {
@@ -191,45 +192,45 @@ START_TEST (test_identifiers) {
 	puts("--- test_identifiers ---");
 
 	char literal_1[] = "abc";
-	Token expected_1[] = {
-		new_token(IdentifierTk, literal_1, 0, 3),
-		new_token(EOFTk, literal_1, 3, 1)
+	thToken expected_1[] = {
+		th_token_create(IdentifierTk, literal_1, 0, 3),
+		th_token_create(EOFTk, literal_1, 3, 1)
 	};
 
 	char literal_2[] = "a12";
-	Token expected_2[] = {
-		new_token(IdentifierTk, literal_2, 0, 3),
-		new_token(EOFTk, literal_2, 3, 1)
+	thToken expected_2[] = {
+		th_token_create(IdentifierTk, literal_2, 0, 3),
+		th_token_create(EOFTk, literal_2, 3, 1)
 	};
 
 	char literal_3[] = "a__";
-	Token expected_3[] = {
-		new_token(IdentifierTk, literal_3, 0, 3),
-		new_token(EOFTk, literal_3, 3, 1)
+	thToken expected_3[] = {
+		th_token_create(IdentifierTk, literal_3, 0, 3),
+		th_token_create(EOFTk, literal_3, 3, 1)
 	};
 
 	char literal_4[] = "a_34";
-	Token expected_4[] = {
-		new_token(IdentifierTk, literal_4, 0, 4),
-		new_token(EOFTk, literal_4, 4, 1)
+	thToken expected_4[] = {
+		th_token_create(IdentifierTk, literal_4, 0, 4),
+		th_token_create(EOFTk, literal_4, 4, 1)
 	};
 
 	char literal_5[] = "a34_";
-	Token expected_5[] = {
-		new_token(IdentifierTk, literal_5, 0, 4),
-		new_token(EOFTk, literal_5, 4, 1)
+	thToken expected_5[] = {
+		th_token_create(IdentifierTk, literal_5, 0, 4),
+		th_token_create(EOFTk, literal_5, 4, 1)
 	};
 
 	char literal_6[] = "_a3";
-	Token expected_6[] = {
-		new_token(IdentifierTk, literal_6, 0, 3),
-		new_token(EOFTk, literal_6, 3, 1)
+	thToken expected_6[] = {
+		th_token_create(IdentifierTk, literal_6, 0, 3),
+		th_token_create(EOFTk, literal_6, 3, 1)
 	};
 
 	char literal_7[] = "_4v";
-	Token expected_7[] = {
-		new_token(IdentifierTk, literal_7, 0, 3),
-		new_token(EOFTk, literal_7, 3, 1)
+	thToken expected_7[] = {
+		th_token_create(IdentifierTk, literal_7, 0, 3),
+		th_token_create(EOFTk, literal_7, 3, 1)
 	};
 
 	Test tests[] = {
@@ -251,75 +252,75 @@ START_TEST (test_keywords) {
 	puts("--- test_keywords ---");
 
 	char literal_1[] = "import";
-	Token expected_1[] = {
-		new_token(ImportTk, literal_1, 0, 6),
-		new_token(EOFTk, literal_1, 6, 1)
+	thToken expected_1[] = {
+		th_token_create(ImportTk, literal_1, 0, 6),
+		th_token_create(EOFTk, literal_1, 6, 1)
 	};
 
 	char literal_2[] = "aimport";
-	Token expected_2[] = {
-		new_token(IdentifierTk, literal_2, 0, 7),
-		new_token(EOFTk, literal_2, 7, 1)
+	thToken expected_2[] = {
+		th_token_create(IdentifierTk, literal_2, 0, 7),
+		th_token_create(EOFTk, literal_2, 7, 1)
 	};
 
 	char literal_3[] = "importa";
-	Token expected_3[] = {
-		new_token(IdentifierTk, literal_3, 0, 7),
-		new_token(EOFTk, literal_3, 7, 1)
+	thToken expected_3[] = {
+		th_token_create(IdentifierTk, literal_3, 0, 7),
+		th_token_create(EOFTk, literal_3, 7, 1)
 	};
 
 	char literal_4[] = "pub";
-	Token expected_4[] = {
-		new_token(PubTk, literal_4, 0, 3),
-		new_token(EOFTk, literal_4, 3, 1)
+	thToken expected_4[] = {
+		th_token_create(PubTk, literal_4, 0, 3),
+		th_token_create(EOFTk, literal_4, 3, 1)
 	};
 
 	char literal_5[] = "local";
-	Token expected_5[] = {
-		new_token(LocalTk, literal_5, 0, 5),
-		new_token(EOFTk, literal_5, 5, 1)
+	thToken expected_5[] = {
+		th_token_create(LocalTk, literal_5, 0, 5),
+		th_token_create(EOFTk, literal_5, 5, 1)
 	};
 
 	char literal_6[] = "type";
-	Token expected_6[] = {
-		new_token(TypeTk, literal_6, 0, 4),
-		new_token(EOFTk, literal_6, 4, 1)
+	thToken expected_6[] = {
+		th_token_create(TypeTk, literal_6, 0, 4),
+		th_token_create(EOFTk, literal_6, 4, 1)
 	};
 
 	char literal_7[] = "as";
-	Token expected_7[] = {
-		new_token(AsTk, literal_7, 0, 2),
-		new_token(EOFTk, literal_7, 2, 1)
+	thToken expected_7[] = {
+		th_token_create(AsTk, literal_7, 0, 2),
+		th_token_create(EOFTk, literal_7, 2, 1)
 	};
 
 	char literal_8[] = "not";
-	Token expected_8[] = {
-		new_token(NotTk, literal_8, 0, 3),
-		new_token(EOFTk, literal_8, 3, 1)
+	thToken expected_8[] = {
+		th_token_create(NotTk, literal_8, 0, 3),
+		th_token_create(EOFTk, literal_8, 3, 1)
 	};
 
 	char literal_9[] = "and";
-	Token expected_9[] = {
-		new_token(AndTk, literal_9, 0, 3),
-		new_token(EOFTk, literal_9, 3, 1)
+	thToken expected_9[] = {
+		th_token_create(AndTk, literal_9, 0, 3),
+		th_token_create(EOFTk, literal_9, 3, 1)
 	};
 
 	char literal_10[] = "or";
-	Token expected_10[] = {
-		new_token(OrTk, literal_10, 0, 2),
-		new_token(EOFTk, literal_10, 2, 1)
+	thToken expected_10[] = {
+		th_token_create(OrTk, literal_10, 0, 2),
+		th_token_create(EOFTk, literal_10, 2, 1)
 	};
 
 	char literal_11[] = "fn";
-	Token expected_11[] = {
-		new_token(FnTk, literal_11, 0, 2),
-		new_token(EOFTk, literal_11, 2, 1)
+	thToken expected_11[] = {
+		th_token_create(FnTk, literal_11, 0, 2),
+		th_token_create(EOFTk, literal_11, 2, 1)
 	};
 
 	char literal_12[] = "return";
-	Token expected_12[] = {
-		new_token(ReturnTk, literal_12, 0, 6),
-		new_token(EOFTk, literal_12, 6, 1)
+	thToken expected_12[] = {
+		th_token_create(ReturnTk, literal_12, 0, 6),
+		th_token_create(EOFTk, literal_12, 6, 1)
 	};
 
 	Test tests[] = {
@@ -346,29 +347,29 @@ START_TEST (test_comments) {
 	puts("--- test_comments ---");
 
 	char literal_1[] = "-- abc";
-	Token expected_1[] = {
-		new_token(EOFTk, literal_1, 6, 1)
+	thToken expected_1[] = {
+		th_token_create(EOFTk, literal_1, 6, 1)
 	};
 
 	char literal_2[] = "- -- this is a dash token :)";
-	Token expected_2[] = {
-		new_token(DashTk, literal_2, 0, 1),
-		new_token(EOFTk, literal_2, 28, 1)
+	thToken expected_2[] = {
+		th_token_create(DashTk, literal_2, 0, 1),
+		th_token_create(EOFTk, literal_2, 28, 1)
 	};
 
 	char literal_3[] = "abc == 2 {\n-- Do something here idk\n}";
-	Token expected_3[] = {
-		new_token(IdentifierTk, literal_3, 0, 3),
-		new_token(EqualsToTk, literal_3, 4, 2),
-		new_token(IntTk, literal_3, 7, 1),
-		new_token(OpenBraceTk, literal_3, 9, 1),
-		new_token(CloseBraceTk, literal_3, 36, 1),
-		new_token(EOFTk, literal_2, 37, 1)
+	thToken expected_3[] = {
+		th_token_create(IdentifierTk, literal_3, 0, 3),
+		th_token_create(EqualsToTk, literal_3, 4, 2),
+		th_token_create(IntTk, literal_3, 7, 1),
+		th_token_create(OpenBraceTk, literal_3, 9, 1),
+		th_token_create(CloseBraceTk, literal_3, 36, 1),
+		th_token_create(EOFTk, literal_2, 37, 1)
 	};
 
 	char literal_4[] = "-- +-/,{}()<>===!=&*|";
-	Token expected_4[] = {
-		new_token(EOFTk, literal_2, 21, 1)
+	thToken expected_4[] = {
+		th_token_create(EOFTk, literal_2, 21, 1)
 	};
 
 	Test tests[] = {
@@ -387,21 +388,21 @@ START_TEST (test_whitespaces) {
 	puts("--- test_whitespaces ---");
 
 	char literal_1[] = "\t-\t";
-	Token expected_1[] = {
-		new_token(DashTk, literal_1, 1, 1),
-		new_token(EOFTk, literal_1, 3, 1)
+	thToken expected_1[] = {
+		th_token_create(DashTk, literal_1, 1, 1),
+		th_token_create(EOFTk, literal_1, 3, 1)
 	};
 
 	char literal_2[] = "\nab\n";
-	Token expected_2[] = {
-		new_token(IdentifierTk, literal_2, 1, 2),
-		new_token(EOFTk, literal_2, 4, 1)
+	thToken expected_2[] = {
+		th_token_create(IdentifierTk, literal_2, 1, 2),
+		th_token_create(EOFTk, literal_2, 4, 1)
 	};
 
 	char literal_3[] = " 123 ";
-	Token expected_3[] = {
-		new_token(IntTk, literal_3, 1, 3),
-		new_token(EOFTk, literal_3, 5, 1)
+	thToken expected_3[] = {
+		th_token_create(IntTk, literal_3, 1, 3),
+		th_token_create(EOFTk, literal_3, 5, 1)
 	};
 
 	Test tests[] = {

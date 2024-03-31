@@ -1,14 +1,15 @@
+#include <thatlang/diags/span.h>
+#include <thatlang/diags/bag.h>
+#include <thatlang/diags/diag.h>
+#include <thatlang/globl.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-#include "diags/span.h"
-#include "diags/bag.h"
-#include "diags/diag.h"
-#include "globl.h"
 
 
-static ERR formatstr(char *format, va_list argv, DiagBag *bag, char **str) {
+static thERR formatstr(char *format, va_list argv, thDiagBag *bag, char **str) {
 	va_list argv_copy;
 	va_copy(argv_copy, argv);
 
@@ -16,7 +17,7 @@ static ERR formatstr(char *format, va_list argv, DiagBag *bag, char **str) {
 
 	char *res = malloc(size);
 	if (res == NULL) {
-		bag->report_intern(bag, "malloc(%zu) returned NULL on DiagBag.formatstr.", size);
+		bag->report_intern(bag, "malloc(%zu) returned NULL on th_DiagBag.formatstr.", size);
 		return 2;
 	}
 
@@ -30,44 +31,44 @@ static ERR formatstr(char *format, va_list argv, DiagBag *bag, char **str) {
 	return 0;
 }
 
-void append(Diag *diag, Diag **to) {
+void append(thDiag *diag, thDiag **to) {
 	if (*to == NULL) {
 		*to = diag;
 	}
 	else {
-		Diag *current = *to;
+		thDiag *current = *to;
 		while (current->next != NULL)
 			current = current->next;
 		current->next = diag;
 	}
 }
 
-static void free_(DiagBag *self) {
-	Diag *current = self->diags;
+static void free_(thDiagBag *self) {
+	thDiag *current = self->diags;
 
 	while (current != NULL) {
-		Diag *next = current->next;
+		thDiag *next = current->next;
 
 		current->free(current);
 		current = next;
 	}
 }
 
-static ERR report_intern(DiagBag *self, char *format, ...) {
+static thERR report_intern(thDiagBag *self, char *format, ...) {
 	va_list argv;
 	va_start(argv, format);
 
-	ERR err;
-	Diag *diag;
+	thERR err;
+	thDiag *diag;
 	char *msg;
-	TextSpan span = {};
+	thTextSpan span = {};
 
 	// Format message
 	err = formatstr(format, argv, self, &msg);
 	if (err > 0) return err;
 
 	// Create diagnostic
-	err = new_diag(span, msg, self, &diag);
+	err = th_diag_create(span, msg, self, &diag);
 	if (err > 0) return err;
 
 	append(diag, &self->intern);
@@ -75,12 +76,12 @@ static ERR report_intern(DiagBag *self, char *format, ...) {
 	return 0;
 }
 
-static ERR report(DiagBag *self, TextSpan span, char *format, ...) {
+static thERR report(thDiagBag *self, thTextSpan span, char *format, ...) {
 	va_list argv;
 	va_start(argv, format);
 
-	ERR err;
-	Diag *diag;
+	thERR err;
+	thDiag *diag;
 	char *msg;
 
 	// Format message
@@ -88,7 +89,7 @@ static ERR report(DiagBag *self, TextSpan span, char *format, ...) {
 	if (err > 0) return err;
 
 	// Create diagnostic
-	err = new_diag(span, msg, self, &diag);
+	err = th_diag_create(span, msg, self, &diag);
 	if (err > 0) return err;
 
 	append(diag, &self->diags);
@@ -96,8 +97,8 @@ static ERR report(DiagBag *self, TextSpan span, char *format, ...) {
 	return 0;
 }
 
-DiagBag new_diagbag() {
-	return (DiagBag) {
+thDiagBag th_diagbag_create() {
+	return (thDiagBag) {
 		.intern = NULL,
 		.diags = NULL,
 

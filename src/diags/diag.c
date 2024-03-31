@@ -1,23 +1,24 @@
+#include <thatlang/diags/bag.h>
+#include <thatlang/diags/diag.h>
+
 #include <stdio.h>
 #include <stdlib.h>
-#include "diags/bag.h"
-#include "diags/diag.h"
 
 
-static void free_(Diag *self) {
+static void free_(thDiag *self) {
 	free(self->msg);
 	free(self);
 }
 
-ERR new_diag(TextSpan span, char *msg, DiagBag *bag, Diag **diag) {
-	Diag *res = malloc(sizeof(Diag));
+thERR th_diag_create(thTextSpan span, char *msg, thDiagBag *bag, thDiag **diag) {
+	thDiag *res = malloc(sizeof(thDiag));
 
 	if (res == NULL) {
-		bag->report_intern(bag, "malloc(%zu) returned NULL on new_diag", sizeof(Diag));
+		bag->report_intern(bag, "malloc(%zu) returned NULL on new_diag", sizeof(thDiag));
 		return 2;
 	}
 
-	*res = (Diag) {
+	*res = (thDiag) {
 		.span = span,
 		.msg = msg,
 		.free = &free_,

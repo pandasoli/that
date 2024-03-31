@@ -8,6 +8,6 @@ typedef struct {
 		pos,
 		len,
 		end;
-} TextSpan;
+} thTextSpan;
 
-TextSpan new_textspan(size_t pos, size_t len);
+thTextSpan th_textspan_create(size_t pos, size_t len);

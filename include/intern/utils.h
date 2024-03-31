@@ -1,8 +1,6 @@
 #pragma once
 
-#include "lexer/token.h"
-#include "parser/node.h"
+#include <thatlang/lexer/token.h>
 
 
-char *token_strkind(TokenKind kind);
-char *node_strkind(NodeKind kind);
+char *token_strkind(thTokenKind kind);

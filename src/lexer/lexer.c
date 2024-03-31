@@ -1,7 +1,8 @@
+#include <thatlang/lexer/lexer.h>
+#include <thatlang/lexer/token.h>
+#include <thatlang/globl.h>
+
 #include <string.h>
-#include "lexer/lexer.h"
-#include "lexer/token.h"
-#include "globl.h"
 
 #define NEXT self->pos++
 #define CURRENT self->text[self->pos]
@@ -10,14 +11,14 @@
 #define IS_DEC(a) ('0' <= a && a <= '9')
 
 
-static Token lex(Lexer *self) {
+static thToken lex(thLexer *self) {
 	while (
 		CURRENT == ' ' ||
 		CURRENT == '\t' ||
 		CURRENT == '\n'
 	) NEXT;
 
-	TokenKind kind = UnknownTk;
+	thTokenKind kind = UnknownTk;
 	size_t pos = self->pos;
 	char *literal = self->text + pos;
 
@@ -121,10 +122,10 @@ static Token lex(Lexer *self) {
 			else NEXT;
 	}
 
-	return new_token(kind, literal, pos, self->pos - pos);
+	return th_token_create(kind, literal, pos, self->pos - pos);
 }
 
-ERR lexer_init(char *text, Lexer *lexer) {
+thERR th_lexer_init(char *text, thLexer *lexer) {
 	if (text == NULL || lexer == NULL)
 		return 1;
 

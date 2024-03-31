@@ -1,8 +1,8 @@
-#include "diags/span.h"
+#include <thatlang/diags/span.h>
 
 
-TextSpan new_textspan(size_t pos, size_t len) {
-	return (TextSpan) {
+thTextSpan th_textspan_create(size_t pos, size_t len) {
+	return (thTextSpan) {
 		.pos = pos,
 		.len = len,
 		.end = pos + len
