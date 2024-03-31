@@ -97,15 +97,13 @@ static ERR report(DiagBag *self, TextSpan span, char *format, ...) {
 }
 
 DiagBag new_diagbag() {
-	DiagBag res;
+	return (DiagBag) {
+		.intern = NULL,
+		.diags = NULL,
 
-	res.intern = NULL;
-	res.diags = NULL;
+		.free = &free_,
 
-	res.free = &free_;
-
-	res.report_intern = &report_intern;
-	res.report = &report;
-
-	return res;
+		.report_intern = &report_intern,
+		.report = &report
+	};
 }

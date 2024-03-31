@@ -17,10 +17,12 @@ ERR new_diag(TextSpan span, char *msg, DiagBag *bag, Diag **diag) {
 		return 2;
 	}
 
-	res->span = span;
-	res->msg = msg;
-	res->free = &free_;
-	res->next = NULL;
+	*res = (Diag) {
+		.span = span,
+		.msg = msg,
+		.free = &free_,
+		.next = NULL
+	};
 
 	*diag = res;
 
