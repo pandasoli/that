@@ -9,8 +9,8 @@ void print_token(thToken token) {
 	printf(
 		"%s \"%.*s\" %zu %zu",
 		token_strkind(token.kind),
-		(int) token.span.len, token.literal,
-		token.span.pos,
-		token.span.len
+		(int) token.location.len, token.literal,
+		token.location.pos,
+		token.location.len
 	);
 }

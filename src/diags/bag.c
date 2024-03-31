@@ -1,6 +1,6 @@
-#include <thatlang/diags/span.h>
 #include <thatlang/diags/bag.h>
 #include <thatlang/diags/diag.h>
+#include <thatlang/location.h>
 #include <thatlang/globl.h>
 
 #include <stdio.h>
@@ -61,14 +61,14 @@ static thERR report_intern(thDiagBag *self, char *format, ...) {
 	thERR err;
 	thDiag *diag;
 	char *msg;
-	thTextSpan span = {};
+	thLocation location = {};
 
 	// Format message
 	err = formatstr(format, argv, self, &msg);
 	if (err > 0) return err;
 
 	// Create diagnostic
-	err = th_diag_create(span, msg, self, &diag);
+	err = th_diag_create(location, msg, self, &diag);
 	if (err > 0) return err;
 
 	append(diag, &self->intern);
@@ -76,7 +76,7 @@ static thERR report_intern(thDiagBag *self, char *format, ...) {
 	return 0;
 }
 
-static thERR report(thDiagBag *self, thTextSpan span, char *format, ...) {
+static thERR report(thDiagBag *self, thLocation location, char *format, ...) {
 	va_list argv;
 	va_start(argv, format);
 
@@ -89,7 +89,7 @@ static thERR report(thDiagBag *self, thTextSpan span, char *format, ...) {
 	if (err > 0) return err;
 
 	// Create diagnostic
-	err = th_diag_create(span, msg, self, &diag);
+	err = th_diag_create(location, msg, self, &diag);
 	if (err > 0) return err;
 
 	append(diag, &self->diags);

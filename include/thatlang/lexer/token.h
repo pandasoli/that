@@ -1,6 +1,6 @@
 #pragma once
 
-#include <thatlang/diags/span.h>
+#include <thatlang/location.h>
 
 #include <stddef.h>
 
@@ -42,7 +42,7 @@ typedef struct thToken thToken;
 struct thToken {
 	thTokenKind kind;
 	char *literal;
-	thTextSpan span;
+	thLocation location;
 };
 
 thToken th_token_create(thTokenKind kind, char *literal, size_t pos, size_t len);

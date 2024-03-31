@@ -1,6 +1,6 @@
 #pragma once
 
-#include <thatlang/diags/span.h>
+#include <thatlang/location.h>
 #include <thatlang/globl.h>
 
 
@@ -8,7 +8,7 @@ typedef struct th_DiagBag thDiagBag;
 
 typedef struct th_Diag thDiag;
 struct th_Diag {
-	thTextSpan span;
+	thLocation location;
 	char *msg;
 
 	void (*free)(thDiag *self);
@@ -16,4 +16,4 @@ struct th_Diag {
 	thDiag *next;
 };
 
-thERR th_diag_create(thTextSpan span, char *msg, thDiagBag *bag, thDiag **diag);
+thERR th_diag_create(thLocation location, char *msg, thDiagBag *bag, thDiag **diag);

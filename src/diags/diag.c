@@ -10,8 +10,8 @@ static void free_(thDiag *self) {
 	free(self);
 }
 
-thERR th_diag_create(thTextSpan span, char *msg, thDiagBag *bag, thDiag **diag) {
-	thDiag *res = malloc(sizeof(thDiag));
+thERR th_diag_create(thLocation location, char *msg, thDiagBag *bag, thDiag **diag) {
+	thDiag *res = malloc(sizeof *res);
 
 	if (res == NULL) {
 		bag->report_intern(bag, "malloc(%zu) returned NULL on new_diag", sizeof(thDiag));
@@ -19,7 +19,7 @@ thERR th_diag_create(thTextSpan span, char *msg, thDiagBag *bag, thDiag **diag) 
 	}
 
 	*res = (thDiag) {
-		.span = span,
+		.location = location,
 		.msg = msg,
 		.free = &free_,
 		.next = NULL

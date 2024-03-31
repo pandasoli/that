@@ -60,8 +60,8 @@ static void test_tokens(thLexer *lex, thToken *tokens) {
 		expected = tokens[expected_i];
 
 		ck_assert_msg(actual.kind == expected.kind, "Assert tokens' kind (%s and %s) failed on item %zu", token_strkind(actual.kind), token_strkind(expected.kind), expected_i);
-		ck_assert_msg(actual.span.pos == expected.span.pos, "Assert tokens' pos (%zu; expected %zu) failed on item %zu", actual.span.pos, expected.span.pos, expected_i);
-		ck_assert_msg(actual.span.len == expected.span.len, "Assert tokens' len (%zu; expected %zu) failed on item %zu", actual.span.len, expected.span.len, expected_i);
+		ck_assert_msg(actual.location.pos == expected.location.pos, "Assert tokens' pos (%zu; expected %zu) failed on item %zu", actual.location.pos, expected.location.pos, expected_i);
+		ck_assert_msg(actual.location.len == expected.location.len, "Assert tokens' len (%zu; expected %zu) failed on item %zu", actual.location.len, expected.location.len, expected_i);
 
 		expected_i++;
 	}

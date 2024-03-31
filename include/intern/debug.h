@@ -1,3 +1,5 @@
+#pragma once
+
 #include <thatlang/lexer/token.h>
 
 

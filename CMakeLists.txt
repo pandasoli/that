@@ -10,7 +10,8 @@ add_library(
 
 	src/diags/bag.c
 	src/diags/diag.c
-	src/diags/span.c
+
+	src/location.c
 
 	src/lexer/lexer.c
 	src/lexer/token.c
