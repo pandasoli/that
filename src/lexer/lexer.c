@@ -37,17 +37,17 @@ static thToken lex(thLexer *self) {
 		// Symbols
 		case '+': NEXT; kind = PlusTk; break;
 		case '-': {
-				NEXT;
+			NEXT;
 
-				// Comment
-				if (CURRENT == '-') {
-					while (CURRENT != '\n' && CURRENT != 0)
-						NEXT;
+			// Comment
+			if (CURRENT == '-') {
+				while (CURRENT != '\n' && CURRENT != 0)
+					NEXT;
 
-					return lex(self);
-				}
-				else
-					kind = DashTk;
+				return lex(self);
+			}
+			else
+				kind = DashTk;
 		} break;
 		case '/': NEXT; kind = SlashTk; break;
 
