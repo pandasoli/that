@@ -11,6 +11,15 @@
 #define IS_DEC(a) ('0' <= a && a <= '9')
 
 
+static thKeywordInfo keyword_infos[] = {
+#define T(kind)
+#define KW(kind, image) {kind ## Kw, image},
+	TOKEN_KINDS_LIST(T, KW)
+#undef T
+#undef KW
+	{0, NULL}
+};
+
 static thToken lex(thLexer *self) {
 	while (
 		CURRENT == ' ' ||
@@ -104,18 +113,10 @@ static thToken lex(thLexer *self) {
 
 				// Keywords
 				size_t len = self->pos - pos;
-				size_t t;
 
-				if      (len == (t = 6) && strncmp(literal, "import", t) == 0) kind = ImportTk;
-				else if (len == (t = 3) && strncmp(literal, "pub",    t) == 0) kind = PubTk;
-				else if (len == (t = 5) && strncmp(literal, "local",  t) == 0) kind = LocalTk;
-				else if (len == (t = 4) && strncmp(literal, "type",   t) == 0) kind = TypeTk;
-				else if (len == (t = 2) && strncmp(literal, "as",     t) == 0) kind = AsTk;
-				else if (len == (t = 3) && strncmp(literal, "not",    t) == 0) kind = NotTk;
-				else if (len == (t = 3) && strncmp(literal, "and",    t) == 0) kind = AndTk;
-				else if (len == (t = 2) && strncmp(literal, "or",     t) == 0) kind = OrTk;
-				else if (len == (t = 2) && strncmp(literal, "fn",     t) == 0) kind = FnTk;
-				else if (len == (t = 6) && strncmp(literal, "return", t) == 0) kind = ReturnTk;
+				for (size_t i = 0; keyword_infos[i].kind != 0 && kind == IdentifierTk; i++)
+					if (strncmp(keyword_infos[i].image, literal, len) == 0)
+						kind = keyword_infos[i].kind;
 			}
 
 			// Just skip Unknown

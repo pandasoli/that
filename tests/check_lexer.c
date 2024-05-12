@@ -253,7 +253,7 @@ START_TEST (test_keywords) {
 
 	char literal_1[] = "import";
 	thToken expected_1[] = {
-		th_token_create(ImportTk, literal_1, 0, 6),
+		th_token_create(ImportKw, literal_1, 0, 6),
 		th_token_create(EOFTk, literal_1, 6, 1)
 	};
 
@@ -271,55 +271,55 @@ START_TEST (test_keywords) {
 
 	char literal_4[] = "pub";
 	thToken expected_4[] = {
-		th_token_create(PubTk, literal_4, 0, 3),
+		th_token_create(PubKw, literal_4, 0, 3),
 		th_token_create(EOFTk, literal_4, 3, 1)
 	};
 
 	char literal_5[] = "local";
 	thToken expected_5[] = {
-		th_token_create(LocalTk, literal_5, 0, 5),
+		th_token_create(LocalKw, literal_5, 0, 5),
 		th_token_create(EOFTk, literal_5, 5, 1)
 	};
 
 	char literal_6[] = "type";
 	thToken expected_6[] = {
-		th_token_create(TypeTk, literal_6, 0, 4),
+		th_token_create(TypeKw, literal_6, 0, 4),
 		th_token_create(EOFTk, literal_6, 4, 1)
 	};
 
 	char literal_7[] = "as";
 	thToken expected_7[] = {
-		th_token_create(AsTk, literal_7, 0, 2),
+		th_token_create(AsKw, literal_7, 0, 2),
 		th_token_create(EOFTk, literal_7, 2, 1)
 	};
 
 	char literal_8[] = "not";
 	thToken expected_8[] = {
-		th_token_create(NotTk, literal_8, 0, 3),
+		th_token_create(NotKw, literal_8, 0, 3),
 		th_token_create(EOFTk, literal_8, 3, 1)
 	};
 
 	char literal_9[] = "and";
 	thToken expected_9[] = {
-		th_token_create(AndTk, literal_9, 0, 3),
+		th_token_create(AndKw, literal_9, 0, 3),
 		th_token_create(EOFTk, literal_9, 3, 1)
 	};
 
 	char literal_10[] = "or";
 	thToken expected_10[] = {
-		th_token_create(OrTk, literal_10, 0, 2),
+		th_token_create(OrKw, literal_10, 0, 2),
 		th_token_create(EOFTk, literal_10, 2, 1)
 	};
 
 	char literal_11[] = "fn";
 	thToken expected_11[] = {
-		th_token_create(FnTk, literal_11, 0, 2),
+		th_token_create(FnKw, literal_11, 0, 2),
 		th_token_create(EOFTk, literal_11, 2, 1)
 	};
 
 	char literal_12[] = "return";
 	thToken expected_12[] = {
-		th_token_create(ReturnTk, literal_12, 0, 6),
+		th_token_create(ReturnKw, literal_12, 0, 6),
 		th_token_create(EOFTk, literal_12, 6, 1)
 	};
 

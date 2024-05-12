@@ -12,4 +12,9 @@ struct thLexer {
 	thToken (*lex)(thLexer *self);
 };
 
+typedef struct {
+	thTokenKind kind;
+	char *image;
+} thKeywordInfo;
+
 thERR th_lexer_init(char *text, thLexer *lexer);

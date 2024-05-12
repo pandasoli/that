@@ -4,38 +4,45 @@
 
 #include <stddef.h>
 
-#define TOKEN_KINDS_LIST(X)    \
-		X(Unknown)                 \
-		X(EOF)                     \
-															 \
-		/* Symbols */              \
-		X(Plus) X(Dash) X(Slash)   \
-		X(Comma)                   \
-		X(OpenBrace) X(CloseBrace) \
-		X(OpenParen) X(CloseParen) \
-															 \
-		X(LessThan) X(GreaterThan) \
-		X(EqualsTo) X(Diff)        \
-															 \
-		X(Ampersand) X(Asterisk)   \
-		X(Pipe) X(Equals)          \
-															 \
-		/* Literals */             \
-		X(Identifier)              \
-		X(Int) X(Float)            \
-															 \
-		/* Keywords */             \
-		X(Import) X(Pub)           \
-		X(Local) X(Type) X(As)     \
-		X(Not)                     \
-		X(And) X(Or)               \
-		X(Fn) X(Return)
+#define TOKEN_KINDS_LIST(T, KW) \
+		T(Unknown)                  \
+		T(EOF)                      \
+															  \
+		/* Symbols */               \
+		T(Plus) T(Dash) T(Slash)    \
+		T(Comma)                    \
+		T(OpenBrace) T(CloseBrace)  \
+		T(OpenParen) T(CloseParen)  \
+															  \
+		T(LessThan) T(GreaterThan)  \
+		T(EqualsTo) T(Diff)         \
+															  \
+		T(Ampersand) T(Asterisk)    \
+		T(Pipe) T(Equals)           \
+															  \
+		/* Literals */              \
+		T(Identifier)               \
+		T(Int) T(Float)             \
+															  \
+		/* Keywords */              \
+		KW(Import, "import")        \
+		KW(Pub, "pub")              \
+		KW(Local, "local")          \
+		KW(Type, "type")            \
+		KW(As, "as")                \
+		KW(Not, "not")              \
+		KW(And, "and")              \
+		KW(Or, "or")                \
+		KW(Fn, "fn")                \
+		KW(Return, "return")
 
 typedef enum thTokenKind thTokenKind;
 enum thTokenKind {
-#define X(kind) kind ## Tk,
-	TOKEN_KINDS_LIST(X)
-#undef X
+#define T(kind) kind ## Tk,
+#define KW(kind, ...) kind ## Kw,
+	TOKEN_KINDS_LIST(T, KW)
+#undef T
+#undef KW
 };
 
 typedef struct thToken thToken;
