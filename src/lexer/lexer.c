@@ -109,7 +109,7 @@ static thToken lex(thLexer *self) {
 		    kind = IdentifierTk;
 
 	    	while (IS_ID(CURRENT) || IS_DEC(CURRENT))
-  	      NEXT;
+					NEXT;
 
 				// Keywords
 				size_t len = self->pos - pos;
