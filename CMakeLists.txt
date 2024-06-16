@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.28.1)
 
 project(ThatLang VERSION 1.0.0)
 set(CMAKE_C_COMPILER /usr/bin/gcc)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -ggdb -std=c18")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -ggdb -std=c99")
 set(CMAKE_CTEST_ARGUMENTS "--output-on-failure")
 
 add_library(
