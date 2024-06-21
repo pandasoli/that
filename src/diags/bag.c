@@ -2,6 +2,7 @@
 #include <thatlang/diags/diag.h>
 #include <thatlang/location.h>
 #include <thatlang/globl.h>
+#include <intern/diag_bag.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,7 +10,7 @@
 #include <stdarg.h>
 
 
-static thERR formatstr(char *format, va_list argv, thDiagBag *bag, char **str) {
+static thERR formatstr(char *format, va_list argv, char **str) {
 	va_list argv_copy;
 	va_copy(argv_copy, argv);
 
@@ -17,7 +18,7 @@ static thERR formatstr(char *format, va_list argv, thDiagBag *bag, char **str) {
 
 	char *res = malloc(size);
 	if (res == NULL) {
-		bag->report_intern(bag, "malloc(%zu) returned NULL on th_DiagBag.formatstr.", size);
+		report_intern("malloc(%zu) returned NULL on th_DiagBag.formatstr.", size);
 		return 2;
 	}
 
@@ -43,8 +44,8 @@ void append(thDiag *diag, thDiag **to) {
 	}
 }
 
-static void free_(thDiagBag *self) {
-	thDiag *current = self->diags;
+static void free_() {
+	thDiag *current = th_diags.diags;
 
 	while (current != NULL) {
 		thDiag *next = current->next;
@@ -54,7 +55,7 @@ static void free_(thDiagBag *self) {
 	}
 }
 
-static thERR report_intern(thDiagBag *self, char *format, ...) {
+thERR report_intern(char *format, ...) {
 	va_list argv;
 	va_start(argv, format);
 
@@ -64,19 +65,19 @@ static thERR report_intern(thDiagBag *self, char *format, ...) {
 	thLocation location = {};
 
 	// Format message
-	err = formatstr(format, argv, self, &msg);
+	err = formatstr(format, argv, &msg);
 	if (err > 0) return err;
 
 	// Create diagnostic
-	err = th_diag_create(location, msg, self, &diag);
+	err = th_diag_create(location, msg, &diag);
 	if (err > 0) return err;
 
-	append(diag, &self->intern);
+	append(diag, &th_diags.intern);
 
 	return 0;
 }
 
-static thERR report(thDiagBag *self, thLocation location, char *format, ...) {
+thERR report(thLocation location, char *format, ...) {
 	va_list argv;
 	va_start(argv, format);
 
@@ -85,26 +86,21 @@ static thERR report(thDiagBag *self, thLocation location, char *format, ...) {
 	char *msg;
 
 	// Format message
-	err = formatstr(format, argv, self, &msg);
+	err = formatstr(format, argv, &msg);
 	if (err > 0) return err;
 
 	// Create diagnostic
-	err = th_diag_create(location, msg, self, &diag);
+	err = th_diag_create(location, msg, &diag);
 	if (err > 0) return err;
 
-	append(diag, &self->diags);
+	append(diag, &th_diags.diags);
 
 	return 0;
 }
 
-thDiagBag th_diagbag_create() {
-	return (thDiagBag) {
-		.intern = NULL,
-		.diags = NULL,
+thDiagBag th_diags = (thDiagBag) {
+	.intern = NULL,
+	.diags = NULL,
 
-		.free = &free_,
-
-		.report_intern = &report_intern,
-		.report = &report
-	};
-}
+	.free = &free_
+};

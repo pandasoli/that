@@ -5,15 +5,18 @@
 #include <thatlang/globl.h>
 
 
+/* 0 - Sucess
+ * 1 - Invalid param(s)
+ * 2 - Error on libc function
+ */
+typedef unsigned char thERR;
+
 typedef struct thDiagBag thDiagBag;
 struct thDiagBag {
 	thDiag *diags;
 	thDiag *intern;
 
-	void (*free)(thDiagBag *self);
-
-	thERR (*report_intern)(thDiagBag *self, char *format, ...);
-	thERR (*report)(thDiagBag *self, thLocation location, char *format, ...);
+	void (*free)();
 };
 
-thDiagBag th_diagbag_create();
+extern thDiagBag th_diags;
