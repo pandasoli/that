@@ -4,9 +4,9 @@
 #include <thatlang/globl.h>
 
 
-typedef struct th_DiagBag thDiagBag;
+typedef struct thDiagBag thDiagBag;
 
-typedef struct th_Diag thDiag;
+typedef struct thDiag thDiag;
 struct th_Diag {
 	thLocation location;
 	char *msg;

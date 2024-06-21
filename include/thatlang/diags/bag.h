@@ -5,8 +5,8 @@
 #include <thatlang/globl.h>
 
 
-typedef struct th_DiagBag thDiagBag;
-struct th_DiagBag {
+typedef struct thDiagBag thDiagBag;
+struct thDiagBag {
 	thDiag *diags;
 	thDiag *intern;
 
