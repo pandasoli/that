@@ -7,7 +7,7 @@
 typedef struct thDiagBag thDiagBag;
 
 typedef struct thDiag thDiag;
-struct th_Diag {
+struct thDiag {
 	thLocation location;
 	char *msg;
 
