@@ -46,7 +46,7 @@ static thERR lex(thLexer *self, thToken *token) {
 
 	thTokenKind kind = UnknownTk;
 	size_t pos = self->pos;
-	thStrView *literal = NULL;
+	char *literal = NULL;
 
 	switch (CURRENT) {
 		case   0: NEXT; kind = EOFTk; break;
@@ -121,6 +121,7 @@ static thERR lex(thLexer *self, thToken *token) {
 				// Identify first dot within int
 				if (CURRENT == '.') {
 					kind = FloatTk;
+					APPEND;
 					NEXT;
 
 					while (IS_DEC(CURRENT)) {
@@ -154,9 +155,15 @@ static thERR lex(thLexer *self, thToken *token) {
 			}
 
 			// Convert buffer to string view
-			if (buf.cap > 0 &&
-				(err = buf.extract_view(&buf, &literal)))
+			if (buf.cap > 0) {
+				thStrView *view;
+
+				if ((err = buf.extract_view(&buf, &view)) > 0)
 					return err;
+				else
+					literal = view->data;
+			}
+
 			buf.free(&buf);
 		}
 	}	

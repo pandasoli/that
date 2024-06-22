@@ -49,8 +49,8 @@ enum thTokenKind {
 typedef struct thToken thToken;
 struct thToken {
 	thTokenKind kind;
-	thStrView *literal;
+	char *literal;
 	thLocation location;
 };
 
-thToken th_token_create(thTokenKind kind, thStrView *literal, size_t pos, size_t len);
+thToken th_token_create(thTokenKind kind, char *literal, size_t pos, size_t len);
