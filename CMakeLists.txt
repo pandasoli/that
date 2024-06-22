@@ -17,7 +17,8 @@ add_library(
 	src/lexer/token.c
 
 	src/intern/utils.c
-	src/intern/debug.c)
+	src/intern/debug.c
+	src/intern/str.c)
 
 target_link_libraries(
 	th
@@ -55,3 +56,4 @@ function(mk_test name command)
 endfunction()
 
 mk_test("Test Lexer" "check_lexer")
+mk_test("Test Str" "check_str")

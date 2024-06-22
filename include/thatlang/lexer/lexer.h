@@ -6,10 +6,12 @@
 
 typedef struct thLexer thLexer;
 struct thLexer {
-	char *text;
+	int fd;
+	char current;
 	size_t pos;
 
-	thToken (*lex)(thLexer *self);
+	thERR (*lex)(thLexer *self, thToken *token);
+	thERR (*next)(thLexer *self);
 };
 
 typedef struct {
@@ -17,4 +19,4 @@ typedef struct {
 	char *image;
 } thKeywordInfo;
 
-thERR th_lexer_init(char *text, thLexer *lexer);
+thERR th_lexer_init(int fd, thLexer *lexer);

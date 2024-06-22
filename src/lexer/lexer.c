@@ -1,14 +1,24 @@
 #include <thatlang/lexer/lexer.h>
 #include <thatlang/lexer/token.h>
 #include <thatlang/globl.h>
+#include <intern/diag_bag.h>
+#include <intern/str.h>
 
+#include <stdio.h>
 #include <string.h>
-
-#define NEXT self->pos++
-#define CURRENT self->text[self->pos]
+#include <unistd.h>
 
 #define IS_ID(a) ('a' <= a && a <= 'z') || ('A' <= a && a <= 'Z') || a == '_'
 #define IS_DEC(a) ('0' <= a && a <= '9')
+
+#define CURRENT self->current
+#define NEXT                          \
+		if ((err = self->next(self)) > 0) \
+			return err
+
+#define APPEND                               \
+	if ((err = buf.append(&buf, CURRENT)) > 0) \
+		return err
 
 
 static thKeywordInfo keyword_infos[] = {
@@ -20,7 +30,14 @@ static thKeywordInfo keyword_infos[] = {
 	{0, NULL}
 };
 
-static thToken lex(thLexer *self) {
+static thERR lex(thLexer *self, thToken *token) {
+	thERR err;
+
+	if (self->pos == 0) {
+		NEXT;
+		self->pos = 0;
+	}
+
 	while (
 		CURRENT == ' ' ||
 		CURRENT == '\t' ||
@@ -29,7 +46,7 @@ static thToken lex(thLexer *self) {
 
 	thTokenKind kind = UnknownTk;
 	size_t pos = self->pos;
-	char *literal = self->text + pos;
+	thStrView *literal = NULL;
 
 	switch (CURRENT) {
 		case   0: NEXT; kind = EOFTk; break;
@@ -44,7 +61,7 @@ static thToken lex(thLexer *self) {
 				while (CURRENT != '\n' && CURRENT != 0)
 					NEXT;
 
-				return lex(self);
+				return lex(self, token);
 			}
 			else
 				kind = DashTk;
@@ -82,7 +99,12 @@ static thToken lex(thLexer *self) {
 		case '*': NEXT; kind = AsteriskTk; break;
 		case '|': NEXT; kind = PipeTk; break;
 
-		default:
+		default: {
+			thStrBuilder buf;
+
+			if ((err = strbuilder_create(NULL, 0, &buf)))
+				return err;
+
 			/* Numbers support:
 			 * int		123
 			 * float	123.456
@@ -91,16 +113,20 @@ static thToken lex(thLexer *self) {
 				kind = IntTk;
 
 				// Get the integer part
-				while (IS_DEC(CURRENT))
+				while (IS_DEC(CURRENT)) {
+					APPEND;
 					NEXT;
+				}
 
 				// Identify first dot within int
 				if (CURRENT == '.') {
 					kind = FloatTk;
 					NEXT;
 
-					while (IS_DEC(CURRENT))
+					while (IS_DEC(CURRENT)) {
+						APPEND;
 						NEXT;
+					}
 				}
 			}
 
@@ -108,32 +134,62 @@ static thToken lex(thLexer *self) {
 			else if (IS_ID(CURRENT)) {
 		    kind = IdentifierTk;
 
-	    	while (IS_ID(CURRENT) || IS_DEC(CURRENT))
+	    	while (IS_ID(CURRENT) || IS_DEC(CURRENT)) {
+					APPEND;
 					NEXT;
+				}
 
 				// Keywords
 				size_t len = self->pos - pos;
 
 				for (size_t i = 0; keyword_infos[i].kind != 0 && kind == IdentifierTk; i++)
-					if (strncmp(keyword_infos[i].image, literal, len) == 0)
+					if (strncmp(keyword_infos[i].image, buf.data, len) == 0)
 						kind = keyword_infos[i].kind;
 			}
 
 			// Just skip Unknown
-			else NEXT;
-	}
+			else {
+				APPEND;
+				NEXT;
+			}
 
-	return th_token_create(kind, literal, pos, self->pos - pos);
+			// Convert buffer to string view
+			if (buf.cap > 0 &&
+				(err = buf.extract_view(&buf, &literal)))
+					return err;
+			buf.free(&buf);
+		}
+	}	
+
+	*token = th_token_create(kind, literal, pos, self->pos - pos);
+	return 0;
 }
 
-thERR th_lexer_init(char *text, thLexer *lexer) {
-	if (text == NULL || lexer == NULL)
+static thERR next(thLexer *self) {
+	int ret = read(self->fd, &self->current, 1);
+
+	if (ret == -1) {
+		report_intern("read(%d, %p) returned %d on lex.next", self->fd, &self->current, ret);
+		return 2;
+	}
+	else if (ret == 0)
+		self->current = '\0';
+
+	self->pos++;
+
+	return 0;
+}
+
+thERR th_lexer_init(int fd, thLexer *lexer) {
+	if (fd <= 0 || lexer == NULL)
 		return 1;
 
-	lexer->text = text;
+	lexer->fd = fd;
+	lexer->current = '\0';
 	lexer->pos = 0;
 
 	lexer->lex = &lex;
+	lexer->next = &next;
 
 	return 0;
 }

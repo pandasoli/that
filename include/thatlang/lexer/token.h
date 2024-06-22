@@ -1,6 +1,7 @@
 #pragma once
 
 #include <thatlang/location.h>
+#include <intern/str.h>
 
 #include <stddef.h>
 
@@ -48,8 +49,8 @@ enum thTokenKind {
 typedef struct thToken thToken;
 struct thToken {
 	thTokenKind kind;
-	char *literal;
+	thStrView *literal;
 	thLocation location;
 };
 
-thToken th_token_create(thTokenKind kind, char *literal, size_t pos, size_t len);
+thToken th_token_create(thTokenKind kind, thStrView *literal, size_t pos, size_t len);
