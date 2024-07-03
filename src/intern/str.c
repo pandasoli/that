@@ -44,14 +44,13 @@ static thERR extract_view(thStrBuilder *self, thStrView **view) {
 		return 2;
 	}
 
-	char *data = malloc(self->size + 1);
+	char *data = malloc(self->size);
 	if (data == NULL) {
-		report_intern("malloc(%zu) returned NULL on thStrBuilder.extract_view for data", self->size + 1);
+		report_intern("malloc(%zu) returned NULL on thStrBuilder.extract_view for data", self->size);
 		return 2;
 	}
 
 	strncpy(data, self->data, self->size);
-	data[self->size] = '\0';
 
 	res->data = data;
 	res->size = self->size;
