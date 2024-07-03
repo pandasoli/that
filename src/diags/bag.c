@@ -65,12 +65,12 @@ thERR report_intern(char *format, ...) {
 	thLocation location = {};
 
 	// Format message
-	err = formatstr(format, argv, &msg);
-	if (err > 0) return err;
+	if ((err = formatstr(format, argv, &msg)))
+		return err;
 
 	// Create diagnostic
-	err = th_diag_create(location, msg, &diag);
-	if (err > 0) return err;
+	if ((err = th_diag_create(location, msg, &diag)))
+		return err;
 
 	append(diag, &th_diags.intern);
 
@@ -86,12 +86,12 @@ thERR report(thLocation location, char *format, ...) {
 	char *msg;
 
 	// Format message
-	err = formatstr(format, argv, &msg);
-	if (err > 0) return err;
+	if ((err = formatstr(format, argv, &msg)))
+		return err;
 
 	// Create diagnostic
-	err = th_diag_create(location, msg, &diag);
-	if (err > 0) return err;
+	if ((err = th_diag_create(location, msg, &diag)))
+		return err;
 
 	append(diag, &th_diags.diags);
 

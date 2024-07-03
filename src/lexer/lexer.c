@@ -12,12 +12,12 @@
 #define IS_DEC(a) ('0' <= a && a <= '9')
 
 #define CURRENT self->current
-#define NEXT                          \
-		if ((err = self->next(self)) > 0) \
+#define NEXT                      \
+		if ((err = self->next(self))) \
 			return err
 
-#define APPEND                               \
-	if ((err = buf.append(&buf, CURRENT)) > 0) \
+#define APPEND                           \
+	if ((err = buf.append(&buf, CURRENT))) \
 		return err
 
 
@@ -159,10 +159,10 @@ static thERR lex(thLexer *self, thToken *token) {
 			}
 
 			// Convert buffer to string view
-			if (buf.cap > 0) {
+			if (buf.cap) {
 				thStrView *view;
 
-				if ((err = buf.extract_view(&buf, &view)) > 0)
+				if ((err = buf.extract_view(&buf, &view)))
 					return err;
 				else
 					literal = view->data;
