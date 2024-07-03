@@ -37,6 +37,7 @@
 		KW(Fn, "fn")                \
 		KW(Return, "return")
 
+
 typedef enum thTokenKind thTokenKind;
 enum thTokenKind {
 #define T(kind) kind ## Tk,
