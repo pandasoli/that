@@ -60,7 +60,11 @@ static thERR extract_view(thStrBuilder *self, thStrView **view) {
 }
 
 static void free_(thStrBuilder *self) {
+	if (!self->cap) return;
+
 	free(self->data);
+	self->size = 0;
+	self->cap = 0;
 }
 
 thERR strbuilder_create(char *data, size_t len, thStrBuilder *sb) {
