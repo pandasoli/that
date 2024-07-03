@@ -141,10 +141,8 @@ static thERR lex(thLexer *self, thToken *token) {
 				}
 
 				// Keywords
-				size_t len = self->pos - pos;
-
 				for (size_t i = 0; keyword_infos[i].kind != 0 && kind == IdentifierTk; i++)
-					if (strncmp(keyword_infos[i].image, buf.data, len) == 0)
+					if (strcmp(keyword_infos[i].image, buf.data) == 0)
 						kind = keyword_infos[i].kind;
 
 				// If it's a keyword, no need to store it's literal
