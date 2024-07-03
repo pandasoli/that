@@ -293,7 +293,7 @@ START_TEST (test_keywords) {
 
 	char literal_1[] = "import";
 	thToken expected_1[] = { 
-		th_token_create(ImportKw, literal_1, 0, 6),
+		th_token_create(ImportKw, NULL, 0, 6),
 		th_token_create(EOFTk, NULL, 6, 1)
 	};
 
@@ -309,57 +309,63 @@ START_TEST (test_keywords) {
 		th_token_create(EOFTk, NULL, 7, 1)
 	};
 
-	char literal_4[] = "pub";
+	char literal_4[] = "impor";
 	thToken expected_4[] = { 
-		th_token_create(PubKw, literal_4, 0, 3),
-		th_token_create(EOFTk, NULL, 3, 1)
-	};
-
-	char literal_5[] = "local";
-	thToken expected_5[] = { 
-		th_token_create(LocalKw, literal_5, 0, 5),
+		th_token_create(IdentifierTk, literal_4, 0, 5),
 		th_token_create(EOFTk, NULL, 5, 1)
 	};
 
-	char literal_6[] = "type";
+	char literal_5[] = "pub";
+	thToken expected_5[] = { 
+		th_token_create(PubKw, NULL, 0, 3),
+		th_token_create(EOFTk, NULL, 3, 1)
+	};
+
+	char literal_6[] = "local";
 	thToken expected_6[] = { 
-		th_token_create(TypeKw, literal_6, 0, 4),
+		th_token_create(LocalKw, NULL, 0, 5),
+		th_token_create(EOFTk, NULL, 5, 1)
+	};
+
+	char literal_7[] = "type";
+	thToken expected_7[] = { 
+		th_token_create(TypeKw, NULL, 0, 4),
 		th_token_create(EOFTk, NULL, 4, 1)
 	};
 
-	char literal_7[] = "as";
-	thToken expected_7[] = { 
-		th_token_create(AsKw, literal_7, 0, 2),
-		th_token_create(EOFTk, NULL, 2, 1)
-	};
-
-	char literal_8[] = "not";
+	char literal_8[] = "as";
 	thToken expected_8[] = { 
-		th_token_create(NotKw, literal_8, 0, 3),
-		th_token_create(EOFTk, NULL, 3, 1)
+		th_token_create(AsKw, NULL, 0, 2),
+		th_token_create(EOFTk, NULL, 2, 1)
 	};
 
-	char literal_9[] = "and";
+	char literal_9[] = "not";
 	thToken expected_9[] = { 
-		th_token_create(AndKw, literal_9, 0, 3),
+		th_token_create(NotKw, NULL, 0, 3),
 		th_token_create(EOFTk, NULL, 3, 1)
 	};
 
-	char literal_10[] = "or";
+	char literal_10[] = "and";
 	thToken expected_10[] = { 
-		th_token_create(OrKw, literal_10, 0, 2),
-		th_token_create(EOFTk, NULL, 2, 1)
+		th_token_create(AndKw, NULL, 0, 3),
+		th_token_create(EOFTk, NULL, 3, 1)
 	};
 
-	char literal_11[] = "fn";
+	char literal_11[] = "or";
 	thToken expected_11[] = { 
-		th_token_create(FnKw, literal_11, 0, 2),
+		th_token_create(OrKw, NULL, 0, 2),
 		th_token_create(EOFTk, NULL, 2, 1)
 	};
 
-	char literal_12[] = "return";
+	char literal_12[] = "fn";
 	thToken expected_12[] = { 
-		th_token_create(ReturnKw, literal_12, 0, 6),
+		th_token_create(FnKw, NULL, 0, 2),
+		th_token_create(EOFTk, NULL, 2, 1)
+	};
+
+	char literal_13[] = "return";
+	thToken expected_13[] = { 
+		th_token_create(ReturnKw, NULL, 0, 6),
 		th_token_create(EOFTk, NULL, 6, 1)
 	};
 
@@ -376,6 +382,7 @@ START_TEST (test_keywords) {
 		{literal_10, expected_10},
 		{literal_11, expected_11},
 		{literal_12, expected_12},
+		{literal_13, expected_13},
 		{}
 	};
 
