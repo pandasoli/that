@@ -12,9 +12,9 @@
 #define IS_DEC(a) ('0' <= a && a <= '9')
 
 #define CURRENT self->current
-#define NEXT                      \
-		if ((err = self->next(self))) \
-			return err
+#define NEXT                    \
+	if ((err = self->next(self))) \
+		return err
 
 #define APPEND                           \
 	if ((err = buf.append(&buf, CURRENT))) \
