@@ -10,7 +10,7 @@
 #include <stdarg.h>
 
 
-static thERR formatstr(char *format, va_list argv, char **str) {
+static thERR formatstr(const char *format, va_list argv, char **str) {
 	va_list argv_copy;
 	va_copy(argv_copy, argv);
 
@@ -55,7 +55,7 @@ static void free_() {
 	}
 }
 
-thERR report_intern(char *format, ...) {
+thERR report_intern(const char *format, ...) {
 	va_list argv;
 	va_start(argv, format);
 
@@ -77,7 +77,7 @@ thERR report_intern(char *format, ...) {
 	return 0;
 }
 
-thERR report(thLocation location, char *format, ...) {
+thERR report(thLocation location, const char *format, ...) {
 	va_list argv;
 	va_start(argv, format);
 

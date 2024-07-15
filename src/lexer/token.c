@@ -3,7 +3,7 @@
 #include <intern/str.h>
 
 
-thToken th_token_create(thTokenKind kind, char *literal, size_t pos, size_t len) {
+thToken th_token_create(thTokenKind kind, const char *literal, size_t pos, size_t len) {
 	return (thToken) {
 		.kind = kind,
 		.literal = literal,

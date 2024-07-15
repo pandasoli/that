@@ -3,5 +3,5 @@
 #include <thatlang/diags/bag.h>
 
 
-thERR report_intern(char *format, ...);
-thERR report(thLocation location, char *format, ...);
+thERR report_intern(const char *format, ...);
+thERR report(thLocation location, const char *format, ...);

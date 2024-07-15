@@ -50,8 +50,8 @@ enum thTokenKind {
 typedef struct thToken thToken;
 struct thToken {
 	thTokenKind kind;
-	char *literal;
+	const char *literal;
 	thLocation location;
 };
 
-thToken th_token_create(thTokenKind kind, char *literal, size_t pos, size_t len);
+thToken th_token_create(thTokenKind kind, const char *literal, size_t pos, size_t len);

@@ -21,7 +21,7 @@ static void test_tokens(thLexer *lex, thToken *tokens) {
 	thERR err;
 
 	thTokenKind kind;
-	char *literal;
+	const char *literal;
 	size_t pos, len;
 
 	do {

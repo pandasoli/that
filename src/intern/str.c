@@ -7,7 +7,7 @@
 #include <assert.h>
 
 
-static thERR append_cstr(thStrBuilder *self, char *cstr, size_t len) {
+static thERR append_cstr(thStrBuilder *self, const char *cstr, size_t len) {
 	assert(self != NULL);
 	assert(cstr != NULL);
 
@@ -67,7 +67,7 @@ static void free_(thStrBuilder *self) {
 	self->cap = 0;
 }
 
-thERR strbuilder_create(char *data, size_t len, thStrBuilder *sb) {
+thERR strbuilder_create(const char *data, size_t len, thStrBuilder *sb) {
 	thStrBuilder res = {
 		.data = NULL,
 		.size = 0,

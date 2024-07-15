@@ -20,9 +20,9 @@ struct thStrBuilder {
 	size_t cap;
 
 	thERR (*append)(thStrBuilder *self, char ch);
-	thERR (*append_cstr)(thStrBuilder *self, char *cstr, size_t len);
+	thERR (*append_cstr)(thStrBuilder *self, const char *cstr, size_t len);
 	thERR (*extract_view)(thStrBuilder *self, thStrView **view);
 	void (*free)(thStrBuilder *self);
 };
 
-thERR strbuilder_create(char *data, size_t size, thStrBuilder *sb);
+thERR strbuilder_create(const char *data, size_t size, thStrBuilder *sb);

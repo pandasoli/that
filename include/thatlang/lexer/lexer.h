@@ -16,7 +16,7 @@ struct thLexer {
 
 typedef struct {
 	thTokenKind kind;
-	char *image;
+	const char *image;
 } thKeywordInfo;
 
 thERR th_lexer_init(int fd, thLexer *lexer);
