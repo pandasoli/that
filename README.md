@@ -1,18 +1,15 @@
-## That Lang
+<div align=center>
+
+# <samp>That Lang</samp>
+</div>
+<br>
+<br>
 
 ### Build
 
 ```sh
 mkdir build && cd $_ && \
-cmake .. && make all test
+cmake .. && make
 ```
 
 Check `cat Makefile | grep \.PHONY` for more options.
-
-### TODO
-
-- [ ] Read as needed
-
-	Instead of lexing the text in the memory,
-	receive a stream and read char by char, storin' in memory
-	only what is needed with a string builder.
