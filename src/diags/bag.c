@@ -4,45 +4,13 @@
 #include <thatlang/globl.h>
 #include <intern/diag_bag.h>
 
+#define _GNU_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
 
-
-static thERR formatstr(const char *format, va_list argv, char **str) {
-	va_list argv_copy;
-	va_copy(argv_copy, argv);
-
-	int size = vsnprintf(NULL, 0, format, argv) + 1;
-
-	char *res = malloc(size);
-	if (res == NULL) {
-		report_intern("malloc(%zu) returned NULL on th_DiagBag.formatstr.", size);
-		return 2;
-	}
-
-	vsnprintf(res, size, format, argv_copy);
-
-	va_end(argv);
-	va_end(argv_copy);
-
-	*str = res;
-
-	return 0;
-}
-
-void append(thDiag *diag, thDiag **to) {
-	if (*to == NULL) {
-		*to = diag;
-	}
-	else {
-		thDiag *current = *to;
-		while (current->next != NULL)
-			current = current->next;
-		current->next = diag;
-	}
-}
 
 static void free_() {
 	thDiag *current = th_diags.diags;
@@ -55,47 +23,51 @@ static void free_() {
 	}
 }
 
-thERR report_intern(const char *format, ...) {
-	va_list argv;
-	va_start(argv, format);
-
+static thERR report_to(thDiag **to, thLocation location, const char *format, va_list args) {
 	thERR err;
 	thDiag *diag;
 	char *msg;
-	thLocation location = {};
 
 	// Format message
-	if ((err = formatstr(format, argv, &msg)))
-		return err;
+	if (vasprintf(&msg, format, args) < 0) {
+		report_intern("vasprintf returned -1 on report_to.");
+		return 2;
+	}
 
 	// Create diagnostic
 	if ((err = th_diag_create(location, msg, &diag)))
 		return err;
 
-	append(diag, &th_diags.intern);
+	// Append to the list
+	if (*to == NULL) {
+		*to = diag;
+	}
+	else {
+		thDiag *current = *to;
+		while (current->next != NULL)
+			current = current->next;
+		current->next = diag;
+	}
 
 	return 0;
 }
 
+thERR report_intern(const char *format, ...) {
+	va_list args;
+	va_start(args, format);
+	thERR err = report_to(&th_diags.intern, (thLocation) {}, format, args);
+
+	va_end(args);
+	return err;
+}
+
 thERR report(thLocation location, const char *format, ...) {
-	va_list argv;
-	va_start(argv, format);
+	va_list args;
+	va_start(args, format);
+	thERR err = report_to(&th_diags.diags, location, format, args);
 
-	thERR err;
-	thDiag *diag;
-	char *msg;
-
-	// Format message
-	if ((err = formatstr(format, argv, &msg)))
-		return err;
-
-	// Create diagnostic
-	if ((err = th_diag_create(location, msg, &diag)))
-		return err;
-
-	append(diag, &th_diags.diags);
-
-	return 0;
+	va_end(args);
+	return err;
 }
 
 thDiagBag th_diags = (thDiagBag) {
