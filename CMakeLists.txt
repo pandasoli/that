@@ -20,10 +20,6 @@ add_library(
 	src/intern/debug.c
 	src/intern/str.c)
 
-target_link_libraries(
-	th
-	PRIVATE m)
-
 target_include_directories(
 	th
 	PUBLIC include)
