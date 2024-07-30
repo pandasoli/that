@@ -24,7 +24,7 @@
 static thKeywordInfo keyword_infos[] = {
 #define T(kind)
 #define KW(kind, image) {kind ## Kw, image},
-	TOKEN_KINDS_LIST(T, KW)
+	TH_TOKEN_KINDS_LIST(T, KW)
 #undef T
 #undef KW
 	{0, NULL}
