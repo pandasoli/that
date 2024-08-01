@@ -36,39 +36,35 @@ START_TEST (test1) {
 	thERR err;
 
 	thStrBuilder sb_1;
-	test(&sb_1, NULL, 0, 1);
+	test(&sb_1, "abc", 3, 2);
+
+	err = sb_1.append(&sb_1, 'd');
+	ck_assert_msg(err == 0, "Assert err (%d) isn't zero for sb2 after append", err);
+	ck_assert_msg(sb_1.size == 4, "Assert StrBuilder.size (%zu and 4) isn't as expected in sb2 after append", sb_1.size);
+	ck_assert_msg(sb_1.cap == 8, "Assert StrBuilder.cap (%zu and 8) isn't as expected in sb2 after append", sb_1.cap);
+	ck_assert_msg(
+		strncmp(sb_1.data, "abcd", 5) == 0,
+		"Assert StrBuilder.data (\"%.*s\" and \"abcd\") isn't the expected in sb2 after append",
+		(int) sb_1.size, sb_1.data);
+
+	err = sb_1.append_cstr(&sb_1, "efg", 3);
+	ck_assert_msg(err == 0, "Assert err (%d) isn't zero for sb2 after append_cstr", err);
+	ck_assert_msg(sb_1.size == 7, "Assert StrBuilder.size (%zu and 7) isn't as expected in sb2 after append_cstr", sb_1.size);
+	ck_assert_msg(sb_1.cap == 8, "Assert StrBuilder.cap (%zu and 8) isn't as expected in sb2 after append_cstr", sb_1.cap);
+	ck_assert_msg(
+		strncmp(sb_1.data, "abcdefg", 7) == 0,
+		"Assert StrBuilder.data (\"%.*s\" and \"abcdefg\") isn't the expected in sb2 after append_cstr",
+		(int) sb_1.size, sb_1.data);
 	sb_1.free(&sb_1);
 
 	thStrBuilder sb_2;
-	test(&sb_2, "abc", 3, 2);
-
-	err = sb_2.append(&sb_2, 'd');
-	ck_assert_msg(err == 0, "Assert err (%d) isn't zero for sb2 after append", err);
-	ck_assert_msg(sb_2.size == 4, "Assert StrBuilder.size (%zu and 4) isn't as expected in sb2 after append", sb_2.size);
-	ck_assert_msg(sb_2.cap == 8, "Assert StrBuilder.cap (%zu and 8) isn't as expected in sb2 after append", sb_2.cap);
-	ck_assert_msg(
-		strncmp(sb_2.data, "abcd", 5) == 0,
-		"Assert StrBuilder.data (\"%.*s\" and \"abcd\") isn't the expected in sb2 after append",
-		(int) sb_2.size, sb_2.data);
-
-	err = sb_2.append_cstr(&sb_2, "efg", 3);
-	ck_assert_msg(err == 0, "Assert err (%d) isn't zero for sb2 after append_cstr", err);
-	ck_assert_msg(sb_2.size == 7, "Assert StrBuilder.size (%zu and 7) isn't as expected in sb2 after append_cstr", sb_2.size);
-	ck_assert_msg(sb_2.cap == 8, "Assert StrBuilder.cap (%zu and 8) isn't as expected in sb2 after append_cstr", sb_2.cap);
-	ck_assert_msg(
-		strncmp(sb_2.data, "abcdefg", 7) == 0,
-		"Assert StrBuilder.data (\"%.*s\" and \"abcdefg\") isn't the expected in sb2 after append_cstr",
-		(int) sb_2.size, sb_2.data);
+	test(&sb_2, "\0", 1, 3);
 	sb_2.free(&sb_2);
 
 	thStrBuilder sb_3;
-	test(&sb_3, "\0", 1, 3);
-	sb_3.free(&sb_3);
-
-	thStrBuilder sb_4;
 	char literal_4 = 'a';
-	test(&sb_4, &literal_4, 1, 4);
-	sb_4.free(&sb_4);
+	test(&sb_3, &literal_4, 1, 4);
+	sb_3.free(&sb_3);
 }
 END_TEST
 
