@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <assert.h>
 
 
 static void free_() {
@@ -24,6 +25,8 @@ static void free_() {
 }
 
 static thERR report_to(thDiag **to, thLocation location, const char *format, va_list args) {
+	assert(to != NULL);
+
 	thERR err;
 	thDiag *diag;
 	char *msg;
@@ -31,7 +34,7 @@ static thERR report_to(thDiag **to, thLocation location, const char *format, va_
 	// Format message
 	if (vasprintf(&msg, format, args) < 0) {
 		report_intern("vasprintf returned -1 on report_to.");
-		return 2;
+		return 1;
 	}
 
 	// Create diagnostic
@@ -53,6 +56,8 @@ static thERR report_to(thDiag **to, thLocation location, const char *format, va_
 }
 
 thERR report_intern(const char *format, ...) {
+	assert(format != NULL);
+
 	va_list args;
 	va_start(args, format);
 	thERR err = report_to(&th_diags.intern, (thLocation) {}, format, args);
@@ -62,6 +67,8 @@ thERR report_intern(const char *format, ...) {
 }
 
 thERR report(thLocation location, const char *format, ...) {
+	assert(format != NULL);
+
 	va_list args;
 	va_start(args, format);
 	thERR err = report_to(&th_diags.diags, location, format, args);

@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <assert.h>
 
 #define IS_ID(a) ('a' <= a && a <= 'z') || ('A' <= a && a <= 'Z') || a == '_'
 #define IS_DEC(a) ('0' <= a && a <= '9')
@@ -31,6 +32,9 @@ static thKeywordInfo keyword_infos[] = {
 };
 
 static thERR lex(thLexer *self, thToken *token) {
+	assert(self != NULL);
+	assert(token != NULL);
+
 	thERR err;
 
 	if (self->pos == 0) {
@@ -102,7 +106,7 @@ static thERR lex(thLexer *self, thToken *token) {
 		default: {
 			thStrBuilder buf;
 
-			if ((err = strbuilder_create(NULL, 0, &buf)))
+			if ((err = strbuilder_create("", 0, &buf)))
 				return err;
 
 			/* Numbers support:
@@ -175,11 +179,13 @@ static thERR lex(thLexer *self, thToken *token) {
 }
 
 static thERR next(thLexer *self) {
+	assert(self != NULL);
+
 	int ret = read(self->fd, &self->current, 1);
 
 	if (ret == -1) {
 		report_intern("read(%d, %p) returned %d on lex.next", self->fd, &self->current, ret);
-		return 2;
+		return 1;
 	}
 	else if (ret == 0)
 		self->current = '\0';
@@ -190,8 +196,8 @@ static thERR next(thLexer *self) {
 }
 
 thERR th_lexer_init(int fd, thLexer *lexer) {
-	if (fd <= 0 || lexer == NULL)
-		return 1;
+	assert(fd > 0);
+	assert(lexer != NULL);
 
 	lexer->fd = fd;
 	lexer->current = '\0';

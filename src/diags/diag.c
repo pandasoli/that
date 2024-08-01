@@ -4,19 +4,24 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 
 static void free_(thDiag *self) {
+	assert(self != NULL);
+
 	free(self->msg);
 	free(self);
 }
 
 thERR th_diag_create(thLocation location, char *msg, thDiag **diag) {
-	thDiag *res = malloc(sizeof *res);
+	assert(msg != NULL);
+	assert(diag != NULL);
 
+	thDiag *res = malloc(sizeof *res);
 	if (res == NULL) {
 		report_intern("malloc(%zu) returned NULL on new_diag", sizeof(thDiag));
-		return 2;
+		return 1;
 	}
 
 	*res = (thDiag) {

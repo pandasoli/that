@@ -21,7 +21,7 @@ static thERR append_cstr(thStrBuilder *self, const char *cstr, size_t len) {
 
 		if (self->data == NULL) {
 			report_intern("realloc(%zu) returned NULL on thStrBuilder.append_cstr", self->cap);
-			return 2;
+			return 1;
 		}
 	}
 
@@ -38,16 +38,19 @@ static thERR append(thStrBuilder *self, char ch) {
 }
 
 static thERR extract_view(thStrBuilder *self, thStrView **view) {
+	assert(self != NULL);
+	assert(view != NULL);
+
 	thStrView *res = malloc(sizeof *res);
 	if (res == NULL) {
 		report_intern("malloc(%zu) returned NULL on thStrBuilder.extract_view", sizeof *res);
-		return 2;
+		return 1;
 	}
 
 	char *data = malloc(self->size);
 	if (data == NULL) {
 		report_intern("malloc(%zu) returned NULL on thStrBuilder.extract_view for data", self->size);
-		return 2;
+		return 1;
 	}
 
 	strncpy(data, self->data, self->size);
@@ -60,6 +63,8 @@ static thERR extract_view(thStrBuilder *self, thStrView **view) {
 }
 
 static void free_(thStrBuilder *self) {
+	assert(self != NULL);
+
 	if (!self->cap) return;
 
 	free(self->data);
@@ -68,6 +73,9 @@ static void free_(thStrBuilder *self) {
 }
 
 thERR strbuilder_create(const char *data, size_t len, thStrBuilder *sb) {
+	assert(data != NULL);
+	assert(sb != NULL);
+
 	thStrBuilder res = {
 		.data = NULL,
 		.size = 0,
@@ -78,10 +86,7 @@ thERR strbuilder_create(const char *data, size_t len, thStrBuilder *sb) {
 		.free = &free_
 	};
 
-	append_cstr(&res,
-		data == NULL ? "" : data,
-		data == NULL ? 0 : len
-	);
+	append_cstr(&res, data, len);
 
 	*sb = res;
 
@@ -89,6 +94,8 @@ thERR strbuilder_create(const char *data, size_t len, thStrBuilder *sb) {
 }
 
 thStrView strview_create(char *data, size_t size) {
+	assert(data != NULL);
+
 	return (thStrView) {
 		.data = data,
 		.size = size
