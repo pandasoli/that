@@ -5,7 +5,8 @@ Everything in **That** is an expression, there are no statements.
 If an expression that doesn't fit in the last one is found, a next one is created.
 
 ```lua
-local a *ui7 | nil = nil read(&a)
+local a ptr = 0
+read(&a)
 ```
 For example, this code can be divided into _variable assignment_ and _function call_.
 
@@ -54,10 +55,10 @@ The other two logical operators really are control flow constructs.
 
 ### Precedence
 All of these operators have the same precedence that you'd expect from C.
-In cases the precedence isn't what you want, you can use `()` to group stuff.
+In cases the precedence isn't what you want, you can use `{}` to group stuff.
 
 ```lua
-local a ui32 = ((min + max) / 2) as ui32
+local a ui32 = {{min + max} / 2} as ui32
 ```
 
 ## Variables
@@ -80,30 +81,23 @@ local a ui7 = 12 as ui7
     Literal numbers are always `i32`.  
     And floats are also valid.
 
-- Nil -- `nil`
-
-    Use this when you don't want the value to be anything.
-    ```lua
-    local b *ui8 | nil = nil
-    ```
-
 - Unions -- `|`
 
-    Use this to give many times to a variable.
+    Use this to give many types to a variable.
     ```lua
     local a ui7 = 2 as ui7
 
-    local name *ui7 | ui8 | nil = nil
+    local name ptr | ui8 = 0
     name = &a
     name = a          -- Invalid
     name = a as ui8
     ```
 
-- Pointers -- `*`
+- Pointers -- `ptr`
 
     ```lua
     local a ui7 = 65
-    local b *ui7 = &a
+    local ptr = &a
     local c ui7 = *b
     ```
 
@@ -114,12 +108,12 @@ local a ui7 = 12 as ui7
     Tuples unlike arrays, are imutable,
     and were made with a way of returning multiple values of a function in mind.
     ```lua
-    fn divide(a i32, b i32) (i32 | nil, error | nil) {
+    local divide = fn(a i32, b i32) (i32, error) {
         a == 0 or b == 0 and {
-            return (nil, 1)
+            return (0, 1)
         }
 
-        (a / b, nil)
+        (a / b, 0)
     }
     ```
 
@@ -138,10 +132,6 @@ local a ui7 = 12 as ui7
     ```
     Types are not overwritable!
 
-- Unknown -- `unknown`
-
-    An unknown type holds a data a function needs but it doesn't know about.
-    Like the function `free` that expects a pointer, but it doesn't care about the data type.
 
 ## Control Flow
 There's no "if statement", we reuse the control flow structures.
@@ -151,26 +141,26 @@ local b ui7 = 13 as ui7
 
 a == b and {
     -- '%d is equals to %d\n'
-    local f *ui7 = create_arr(ui7, 37, 100, 32, 105, 115, 32, 101, 113, 117, 97, 108, 115, 32, 116, 111, 32, 37, 100, 10)
+    local f ptr = create_arr(37, 100, 32, 105, 115, 32, 101, 113, 117, 97, 108, 115, 32, 116, 111, 32, 37, 100, 10)
     printf(f, a, b)
-    free(f as *unknown)
+    free(f)
 }
 or {
     -- '%d is different from %d\n'
-    local f *ui7 = create_arr(ui7, 37, 100, 32, 105, 115, 32, 100, 105, 102, 102, 101, 114, 101, 110, 116, 32, 102, 114, 111, 109, 32, 37, 100, 10)
+    local f ptr = create_arr(37, 100, 32, 105, 115, 32, 100, 105, 102, 102, 101, 114, 101, 110, 116, 32, 102, 114, 111, 109, 32, 37, 100, 10)
     printf(f, a, b)
-    free(f as *unknown)
+    free(f)
 }
 ```
 
 ## Functions
-```lua
-fn function(a i32, b i32) i32
+```rs
+local function = fn(a i32, b i32) i32
 ```
 Just like in **C** functions can be declared before its definition.
 
-```lua
-fn function(a i32, b i32) i64 {
+```rs
+local function = fn(a i32, b i32) i64 {
     return a + b
 }
 ```
@@ -189,10 +179,10 @@ Use `pub` to give external access to local declarations.
 pub local a ui7 = 0
 pub type A i32 | nil
 
-pub fn print() {
+pub local print = fn() {
     -- "a's value is %d\n"
-    local f *ui7 = create_arr(ui7, 97, 39, 115, 32, 118, 97, 108, 117, 101, 32, 105, 115, 32, 37, 100, 10)
+    local f ptr = create_arr(97, 39, 115, 32, 118, 97, 108, 117, 101, 32, 105, 115, 32, 37, 100, 10)
     printf(f, a)
-    free(a as *unknown)
+    free(a)
 }
 ```
