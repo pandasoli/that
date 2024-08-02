@@ -137,9 +137,9 @@ static thERR lex(thLexer *self, thToken *token) {
 
 			// [a-zA-Z_][a-zA-Z_0-1]*
 			else if (IS_ID(CURRENT)) {
-		    kind = IdentifierTk;
+				kind = IdentifierTk;
 
-	    	while (IS_ID(CURRENT) || IS_DEC(CURRENT)) {
+				while (IS_ID(CURRENT) || IS_DEC(CURRENT)) {
 					APPEND;
 					NEXT;
 				}
