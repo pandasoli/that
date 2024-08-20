@@ -24,7 +24,7 @@
 
 static thKeywordInfo keyword_infos[] = {
 #define T(kind)
-#define KW(kind, image) {kind ## Kw, image},
+#define KW(kind, image) {th ## kind ## Kw, image},
 	TH_TOKEN_KINDS_LIST(T, KW)
 #undef T
 #undef KW
@@ -48,15 +48,15 @@ static thERR lex(thLexer *self, thToken *token) {
 		CURRENT == '\n'
 	) NEXT;
 
-	thTokenKind kind = UnknownTk;
+	thTokenKind kind = thUnknownTk;
 	size_t pos = self->pos;
 	char *literal = NULL;
 
 	switch (CURRENT) {
-		case   0: NEXT; kind = EOFTk; break;
+		case   0: NEXT; kind = thEOFTk; break;
 
 		// Symbols
-		case '+': NEXT; kind = PlusTk; break;
+		case '+': NEXT; kind = thPlusTk; break;
 		case '-': {
 			NEXT;
 
@@ -68,25 +68,25 @@ static thERR lex(thLexer *self, thToken *token) {
 				return lex(self, token);
 			}
 			else
-				kind = DashTk;
+				kind = thDashTk;
 		} break;
-		case '/': NEXT; kind = SlashTk; break;
+		case '/': NEXT; kind = thSlashTk; break;
 
-		case ',': NEXT; kind = CommaTk; break;
-		case '{': NEXT; kind = OpenBraceTk; break;
-		case '}': NEXT; kind = CloseBraceTk; break;
-		case '(': NEXT; kind = OpenParenTk; break;
-		case ')': NEXT; kind = CloseParenTk; break;
+		case ',': NEXT; kind = thCommaTk; break;
+		case '{': NEXT; kind = thOpenBraceTk; break;
+		case '}': NEXT; kind = thCloseBraceTk; break;
+		case '(': NEXT; kind = thOpenParenTk; break;
+		case ')': NEXT; kind = thCloseParenTk; break;
 
-		case '<': NEXT; kind = LessThanTk; break;
-		case '>': NEXT; kind = GreaterThanTk; break;
+		case '<': NEXT; kind = thLessThanTk; break;
+		case '>': NEXT; kind = thGreaterThanTk; break;
 
 		case '=': {
-			kind = EqualsTk;
+			kind = thEqualsTk;
 			NEXT;
 
 			if (CURRENT == '=') {
-				kind = EqualsToTk;
+				kind = thEqualsToTk;
 				NEXT;
 			}
 		} break;
@@ -94,14 +94,14 @@ static thERR lex(thLexer *self, thToken *token) {
 			NEXT;
 
 			if (CURRENT == '=') {
-				kind = DiffTk;
+				kind = thDiffTk;
 				NEXT;
 			}
 		} break;
 
-		case '&': NEXT; kind = AmpersandTk; break;
-		case '*': NEXT; kind = AsteriskTk; break;
-		case '|': NEXT; kind = PipeTk; break;
+		case '&': NEXT; kind = thAmpersandTk; break;
+		case '*': NEXT; kind = thAsteriskTk; break;
+		case '|': NEXT; kind = thPipeTk; break;
 
 		default: {
 			thStrBuilder buf;
@@ -113,7 +113,7 @@ static thERR lex(thLexer *self, thToken *token) {
 			 * float	123.456
 			 */
 			if (IS_DEC(CURRENT)) {
-				kind = IntTk;
+				kind = thIntTk;
 
 				// Get the integer part
 				while (IS_DEC(CURRENT)) {
@@ -123,7 +123,7 @@ static thERR lex(thLexer *self, thToken *token) {
 
 				// Identify first dot within int
 				if (CURRENT == '.') {
-					kind = FloatTk;
+					kind = thFloatTk;
 					APPEND;
 					NEXT;
 
@@ -136,7 +136,7 @@ static thERR lex(thLexer *self, thToken *token) {
 
 			// [a-zA-Z_][a-zA-Z_0-1]*
 			else if (IS_ID(CURRENT)) {
-				kind = IdentifierTk;
+				kind = thIdentifierTk;
 
 				while (IS_ID(CURRENT) || IS_DEC(CURRENT)) {
 					APPEND;
@@ -144,12 +144,12 @@ static thERR lex(thLexer *self, thToken *token) {
 				}
 
 				// Keywords
-				for (size_t i = 0; keyword_infos[i].kind != 0 && kind == IdentifierTk; i++)
+				for (size_t i = 0; keyword_infos[i].kind != 0 && kind == thIdentifierTk; i++)
 					if (strcmp(keyword_infos[i].image, buf.data) == 0)
 						kind = keyword_infos[i].kind;
 
 				// If it's a keyword, no need to store it's literal
-				if (kind != IdentifierTk)
+				if (kind != thIdentifierTk)
 					buf.free(&buf);
 			}
 

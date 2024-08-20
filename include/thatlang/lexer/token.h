@@ -40,8 +40,8 @@
 
 typedef enum thTokenKind thTokenKind;
 enum thTokenKind {
-#define T(kind) kind ## Tk,
-#define KW(kind, ...) kind ## Kw,
+#define T(kind) th ## kind ## Tk,
+#define KW(kind, ...) th ## kind ## Kw,
 	TH_TOKEN_KINDS_LIST(T, KW)
 #undef T
 #undef KW

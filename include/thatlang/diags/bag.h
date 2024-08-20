@@ -7,6 +7,7 @@
 
 /* 0 - Sucess
  * 1 - Error on libc function
+ * 2 - Syntax error on parsing
  */
 typedef unsigned char thERR;
 

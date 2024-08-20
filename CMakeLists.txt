@@ -16,9 +16,12 @@ add_library(
 	src/lexer/lexer.c
 	src/lexer/token.c
 
+	src/parser/parser.c
+
 	src/intern/utils.c
 	src/intern/debug.c
-	src/intern/str.c)
+	src/intern/str.c
+	src/intern/parser/node.c)
 
 target_include_directories(
 	th
@@ -53,3 +56,4 @@ endfunction()
 
 mk_test("Test Lexer" "check_lexer")
 mk_test("Test Str" "check_str")
+mk_test("Main" "main")
