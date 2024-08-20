@@ -13,13 +13,8 @@
 #define IS_DEC(a) ('0' <= a && a <= '9')
 
 #define CURRENT self->current
-#define NEXT                    \
-	if ((err = self->next(self))) \
-		return err
-
-#define APPEND                           \
-	if ((err = buf.append(&buf, CURRENT))) \
-		return err
+#define NEXT ERR(self->next(self))
+#define APPEND ERR(buf.append(&buf, CURRENT))
 
 
 static thKeywordInfo keyword_infos[] = {
