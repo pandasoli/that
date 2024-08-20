@@ -38,8 +38,7 @@ static thERR report_to(thDiag **to, thLocation location, const char *format, va_
 	}
 
 	// Create diagnostic
-	if ((err = th_diag_create(location, msg, &diag)))
-		return err;
+	ERR(th_diag_create(location, msg, &diag));
 
 	// Append to the list
 	if (*to == NULL) {

@@ -106,8 +106,7 @@ static thERR lex(thLexer *self, thToken *token) {
 		default: {
 			thStrBuilder buf;
 
-			if ((err = strbuilder_create("", 0, &buf)))
-				return err;
+			ERR(strbuilder_create("", 0, &buf));
 
 			/* Numbers support:
 			 * int		123
@@ -164,10 +163,8 @@ static thERR lex(thLexer *self, thToken *token) {
 			if (buf.cap) {
 				thStrView *view;
 
-				if ((err = buf.extract_view(&buf, &view)))
-					return err;
-				else
-					literal = view->data;
+				ERR(buf.extract_view(&buf, &view));
+				literal = view->data;
 			}
 
 			buf.free(&buf);
