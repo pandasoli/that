@@ -40,22 +40,6 @@ thERR node_fn_create(thTypeNode *ret_type, thNode *body, thNode **out) {
 	*out = res;
 
 	return 0;
-
-}
-
-thERR node_identifier_create(thToken identifier, thNode **out) {
-	thNode node = { thIdentifierNk, .identifier = identifier };
-
-	thNode *res = malloc(sizeof *res);
-	if (res == NULL) {
-		report_intern("malloc(%zu) returned NULL on %s", sizeof *res, __func__);
-		return 1;
-	}
-
-	memcpy(res, &node, sizeof *res);
-	*out = res;
-
-	return 0;
 }
 
 thERR node_assign_create(thToken name, thTypeNode *type, thNode *val, thNode **out) {
@@ -102,6 +86,22 @@ thERR node_unary_create(thTokenKind op, thNode *val, thNode **out) {
 
 	return 0;
 }
+
+thERR node_identifier_create(thToken identifier, thNode **out) {
+	thNode node = { thIdentifierNk, .identifier = identifier };
+
+	thNode *res = malloc(sizeof *res);
+	if (res == NULL) {
+		report_intern("malloc(%zu) returned NULL on %s", sizeof *res, __func__);
+		return 1;
+	}
+
+	memcpy(res, &node, sizeof *res);
+	*out = res;
+
+	return 0;
+}
+
 
 thERR node_number_create(thToken val, thNode **out) {
 	thNode node = { thNumberNk, .number = val };
