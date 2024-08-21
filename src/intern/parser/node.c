@@ -2,6 +2,8 @@
 #include <intern/parser/node.h>
 #include <intern/diag_bag.h>
 
+#include <string.h>
+
 
 thERR node_type_create(thTypeNode *type, thNode **out) {
 	thNode *res = malloc(sizeof *res);
@@ -26,16 +28,15 @@ thERR node_type_create(thTypeNode *type, thNode **out) {
 }
 
 thERR node_fn_create(thTypeNode *ret_type, thNode *body, thNode **out) {
+	thNode node = { thFnNk, .fn = (thFnNode) { ret_type, body } };
+
 	thNode *res = malloc(sizeof *res);
 	if (res == NULL) {
 		report_intern("malloc(%zu) returned NULL on %s", sizeof *res, __func__);
 		return 1;
 	}
 
-	res->kind = thFnNk;
-	res->fn.ret_type = ret_type;
-	res->fn.body = body;
-
+	memcpy(res, &node, sizeof *res);
 	*out = res;
 
 	return 0;
@@ -43,80 +44,75 @@ thERR node_fn_create(thTypeNode *ret_type, thNode *body, thNode **out) {
 }
 
 thERR node_identifier_create(thToken identifier, thNode **out) {
+	thNode node = { thIdentifierNk, .identifier = identifier };
+
 	thNode *res = malloc(sizeof *res);
 	if (res == NULL) {
 		report_intern("malloc(%zu) returned NULL on %s", sizeof *res, __func__);
 		return 1;
 	}
 
-	res->kind = thIdentifierNk;
-	res->identifier = identifier;
-
+	memcpy(res, &node, sizeof *res);
 	*out = res;
 
 	return 0;
 }
 
 thERR node_assign_create(thToken name, thTypeNode *type, thNode *val, thNode **out) {
+	thNode node = { thAssignNk, .assign = (thAssignNode) { name, type, val } };
+
 	thNode *res = malloc(sizeof *res);
 	if (res == NULL) {
 		report_intern("malloc(%zu) returned NULL on %s", sizeof *res, __func__);
 		return 1;
 	}
 
-	res->kind = thAssignNk;
-	res->assign.name = name;
-	res->assign.type = type;
-	res->assign.val = val;
-
+	memcpy(res, &node, sizeof *res);
 	*out = res;
 
 	return 0;
 }
 
 thERR node_binary_create(thNode *left, thTokenKind op, thNode *right, thNode **out) {
+	thNode node = { thBinaryNk, .binary = (thBinaryNode) { left, op, right } };
+
 	thNode *res = malloc(sizeof *res);
 	if (res == NULL) {
 		report_intern("malloc(%zu) returned NULL on %s", sizeof *res, __func__);
 		return 1;
 	}
 
-	res->kind = thBinaryNk;
-	res->binary.left = left;
-	res->binary.op = op;
-	res->binary.right = right;
-
+	memcpy(res, &node, sizeof *res);
 	*out = res;
 
 	return 0;
 }
 
 thERR node_unary_create(thTokenKind op, thNode *val, thNode **out) {
+	thNode node = { thUnaryNk, .unary = (thUnaryNode) { op, val } };
+
 	thNode *res = malloc(sizeof *res);
 	if (res == NULL) {
 		report_intern("malloc(%zu) returned NULL on %s", sizeof *res, __func__);
 		return 1;
 	}
 
-	res->kind = thUnaryNk;
-	res->unary.op = op;
-	res->unary.val = val;
-
+	memcpy(res, &node, sizeof *res);
 	*out = res;
 
 	return 0;
 }
 
 thERR node_number_create(thToken val, thNode **out) {
+	thNode node = { thNumberNk, .number = val };
+
 	thNode *res = malloc(sizeof *res);
 	if (res == NULL) {
 		report_intern("malloc(%zu) returned NULL on %s", sizeof *res, __func__);
 		return 1;
 	}
 
-	res->kind = thNumberNk;
-	res->number = val;
-
+	memcpy(res, &node, sizeof *res);
 	*out = res;
 
 	return 0;
