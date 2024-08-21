@@ -9,6 +9,20 @@
 #include <intern/debug.h>
 
 
+char *op_str(thTokenKind kind) {
+	return (
+		kind == thPlusTk        ? "+" :
+		kind == thDashTk        ? "-" :
+		kind == thSlashTk       ? "/" :
+		kind == thEqualsToTk    ? "==" :
+		kind == thDiffTk        ? "!=" :
+		kind == thLessThanTk    ? "<" :
+		kind == thGreaterThanTk ? ">" :
+		kind == thEqualsTk      ? "=" :
+		"?"
+	);
+}
+
 void print_node(thNode *node, int lindent);
 void print_type(thTypeNode *node) {
 	while (node) {
@@ -53,8 +67,7 @@ void print_node(thNode *node, int lindent) {
 			puts("Unary [");
 
 			printf("%*s", indent, "");
-			print_token(node->unary.op);
-			printf("\n\e[0m");
+			printf("%s\n\e[0m", op_str(node->unary.op));
 
 			print_node(node->unary.val, indent);
 
@@ -63,22 +76,10 @@ void print_node(thNode *node, int lindent) {
 
 		case thBinaryNk:
 			print_node(node->binary.left, indent);
-
-			printf(" \e[34m%s\e[m ",
-				node->binary.op.kind == thPlusTk        ? "+" :
-				node->binary.op.kind == thDashTk        ? "-" :
-				node->binary.op.kind == thSlashTk       ? "/" :
-				node->binary.op.kind == thEqualsToTk    ? "==" :
-				node->binary.op.kind == thDiffTk        ? "!=" :
-				node->binary.op.kind == thLessThanTk    ? "<" :
-				node->binary.op.kind == thGreaterThanTk ? ">" :
-				node->binary.op.kind == thEqualsTk      ? "=" :
-				"?"
-			);
-
+			printf(" \e[34m%s\e[m ", op_str(node->binary.op));
 			print_node(node->binary.right, indent);
 
-			if (node->binary.op.kind == thEqualsTk)
+			if (node->binary.op == thEqualsTk)
 				putchar('\n');
 			break;
 

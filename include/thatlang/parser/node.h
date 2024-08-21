@@ -33,19 +33,19 @@ struct thFnNode {
 typedef struct thBinaryNode thBinaryNode;
 struct thBinaryNode {
 	thNode *left;
-	thIdentifierNode op;
+	thTokenKind op;
 	thNode *right;
 };
 
 typedef struct thUnaryNode thUnaryNode;
 struct thUnaryNode {
-	thIdentifierNode op;
+	thTokenKind op;
 	thNode *val;
 };
 
 typedef struct thAssignNode thAssignNode;
 struct thAssignNode {
-	thIdentifierNode name;
+	thToken name;
 	thTypeNode *type;
 	thNode *val;
 };

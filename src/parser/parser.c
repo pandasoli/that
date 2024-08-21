@@ -140,7 +140,7 @@ static thERR unary(thParser *self, thNode **node) {
 
 	if (CURRENT.kind == thDashTk)
 	{
-		thToken op = CURRENT;
+		thTokenKind op = CURRENT.kind;
 		NEXT;
 
 		thNode *value;
@@ -160,7 +160,7 @@ static thERR mul(thParser *self, thNode **node) {
 	ERR(unary(self, node));
 
 	while (CURRENT.kind == thSlashTk) {
-		thToken op = CURRENT;
+		thTokenKind op = CURRENT.kind;
 		NEXT;
 
 		thNode *right;
@@ -178,7 +178,7 @@ static thERR add(thParser *self, thNode **node) {
 	ERR(mul(self, node));
 
 	while (CURRENT.kind == thPlusTk || CURRENT.kind == thDashTk) {
-		thToken op = CURRENT;
+		thTokenKind op = CURRENT.kind;
 		NEXT;
 
 		thNode *right;
@@ -199,7 +199,7 @@ static thERR cmp(thParser *self, thNode **node) {
 		CURRENT.kind == thLessThanTk || CURRENT.kind == thGreaterThanTk ||
 		CURRENT.kind == thEqualsToTk || CURRENT.kind == thDiffTk)
 	{
-		thToken op = CURRENT;
+		thTokenKind op = CURRENT.kind;
 		NEXT;
 
 		thNode *right;
@@ -217,7 +217,7 @@ static thERR logical(thParser *self, thNode **node) {
 	ERR(cmp(self, node));
 
 	while (CURRENT.kind == thAndKw || CURRENT.kind == thOrKw) {
-		thToken op = CURRENT;
+		thTokenKind op = CURRENT.kind;
 		NEXT;
 
 		thNode *right;
@@ -276,7 +276,7 @@ static thERR assign(thParser *self, thNode **node) {
 		}
 
 		// Get op
-		thToken op = CURRENT;
+		thTokenKind op = CURRENT.kind;
 		NEXT;
 
 		// Get right

@@ -74,7 +74,7 @@ thERR node_assign_create(thToken name, thTypeNode *type, thNode *val, thNode **o
 	return 0;
 }
 
-thERR node_binary_create(thNode *left, thToken op, thNode *right, thNode **out) {
+thERR node_binary_create(thNode *left, thTokenKind op, thNode *right, thNode **out) {
 	thNode *res = malloc(sizeof *res);
 	if (res == NULL) {
 		report_intern("malloc(%zu) returned NULL on %s", sizeof *res, __func__);
@@ -91,7 +91,7 @@ thERR node_binary_create(thNode *left, thToken op, thNode *right, thNode **out) 
 	return 0;
 }
 
-thERR node_unary_create(thToken op, thNode *val, thNode **out) {
+thERR node_unary_create(thTokenKind op, thNode *val, thNode **out) {
 	thNode *res = malloc(sizeof *res);
 	if (res == NULL) {
 		report_intern("malloc(%zu) returned NULL on %s", sizeof *res, __func__);
