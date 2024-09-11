@@ -24,8 +24,16 @@ typedef struct thNode thTypeNode; // reuse
 typedef thToken thNumberNode;
 typedef thToken thIdentifierNode;
 
+typedef struct thArgs thArgs;
+struct thArgs {
+	thToken identifier;
+	thTypeNode *type;
+	thArgs *next;
+};
+
 typedef struct thFnNode thFnNode;
 struct thFnNode {
+	thArgs *args;
 	thTypeNode *ret_type;
 	thNode *body;
 };

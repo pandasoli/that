@@ -29,8 +29,24 @@ void print_type(thTypeNode *node) {
 		switch (node->kind) {
 			case thIdentifierNk: printf("%*s", (int) node->identifier.location.len, node->identifier.literal); break;
 			case thFnNk:
-				printf("\e[90mfn\e[m()\e[30m");
-				if (node->fn.ret_type) putchar(' ');
+				printf("\e[90mfn\e[m");
+
+				if (node->fn.args) {
+					putchar('(');
+
+					thArgs *current = node->fn.args;
+					while (current != NULL) {
+						printf("\e[30m");
+						print_type(current->type);
+						printf("\e[m");
+						current = current->next;
+						if (current) printf(", ");
+					}
+
+					putchar(')');
+				}
+
+				if (node->fn.ret_type) printf(" \e[30m");
 				print_type(node->fn.ret_type);
 				break;
 
@@ -50,7 +66,24 @@ void print_node(thNode *node, int lindent) {
 		case thIdentifierNk: printf("\e[3m%.*s\e[m", (int) node->identifier.location.len, node->identifier.literal); break;
 
 		case thFnNk:
-			printf("\e[90mfn\e[m()");
+			printf("\e[90mfn\e[m");
+
+			if (node->fn.args) {
+				putchar('(');
+
+				thArgs *current = node->fn.args;
+				while (current != NULL) {
+					printf("\e[3m%.*s\e[m ", (int) current->identifier.location.len, current->identifier.literal);
+
+					printf("\e[30m");
+					print_type(current->type);
+					printf("\e[m");
+					current = current->next;
+					if (current) printf(", ");
+				}
+
+				putchar(')');
+			}
 
 			if (node->fn.ret_type) putchar(' ');
 			printf("\e[30m");
@@ -117,10 +150,10 @@ void print_diags(thERR err) {
 }
 
 int main(void) {
-	char literal[] = ""
+	char literal[] =
 		"local a u8 = 12 + 4"
 		""
-		"local b fn u8 | i8 = fn u8 { a < c }";
+		"local b fn(u8, u8) u8 | i8 = fn(a u8, b u8) u8 { a < c }";
 		/*"local b fn(u8) u8 = fn(c u8) u8 {"*/
 		/*	"a < c and a or c"*/
 		/*"}";*/

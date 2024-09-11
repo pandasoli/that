@@ -24,11 +24,10 @@ thERR node_type_create(thTypeNode *type, thNode **out) {
 	*out = res;
 
 	return 0;
-
 }
 
-thERR node_fn_create(thTypeNode *ret_type, thNode *body, thNode **out) {
-	thNode node = { thFnNk, .fn = (thFnNode) { ret_type, body } };
+thERR node_fn_create(thArgs *args, thTypeNode *ret_type, thNode *body, thNode **out) {
+	thNode node = { thFnNk, .fn = (thFnNode) { args, ret_type, body } };
 
 	thNode *res = malloc(sizeof *res);
 	if (res == NULL) {
@@ -37,6 +36,21 @@ thERR node_fn_create(thTypeNode *ret_type, thNode *body, thNode **out) {
 	}
 
 	memcpy(res, &node, sizeof *res);
+	*out = res;
+
+	return 0;
+}
+
+thERR node_args_create(thToken identifier, thTypeNode *type, thArgs **out) {
+	thArgs args = { identifier, type, NULL };
+
+	thArgs *res = malloc(sizeof *res);
+	if (res == NULL) {
+		report_intern("malloc(%zu) returned NULL on %s", sizeof *res, __func__);
+		return 1;
+	}
+
+	memcpy(res, &args, sizeof *res);
 	*out = res;
 
 	return 0;

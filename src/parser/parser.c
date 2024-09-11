@@ -47,12 +47,47 @@ static thERR process_type(thParser *self, thTypeNode **node) {
 			case thFnKw:
 				NEXT;
 
-				thTypeNode *type;
+				// Get args
+				thArgs *args = NULL;
+				thArgs *last_arg = NULL;
+
+				if (CURRENT.kind == thOpenParenTk) {
+					NEXT;
+
+					while (CURRENT.kind != thCloseParenTk) {
+						thTypeNode *type;
+						thArgs *arg;
+
+						ERR(process_type(self, &type));
+						ERR(node_args_create((thToken) {}, type, &arg));
+
+						// Linked list append
+						last_arg = args == NULL
+							? (args = arg)
+							: (last_arg->next = arg);
+
+						if (CURRENT.kind == thCommaTk) {
+							NEXT;
+						}
+						else if (CURRENT.kind != thCloseParenTk) {
+							report(CURRENT.location, "Found %s while looking for comma or fn args end", token_strkind(CURRENT.kind));
+							return 2;
+						}
+					}
+
+					if (CURRENT.kind != thCloseParenTk) {
+						report(CURRENT.location, "Found %s while looking for fn args end", token_strkind(CURRENT.kind));
+						return 2;
+					}
+					NEXT;
+				}
+
+				thTypeNode *ret;
 
 				// TODO: what if it's nothing?
 				// Add NEXT if it's nothing
-				ERR(process_type(self, &type));
-				ERR(node_fn_create(type, NULL, &new));
+				ERR(process_type(self, &ret));
+				ERR(node_fn_create(args, ret, NULL, &new));
 				break;
 
 			default:
@@ -91,10 +126,55 @@ static thERR primary(thParser *self, thNode **node) {
 		case thFnKw:
 			NEXT;
 
-			// Get return type
-			thTypeNode *ret_type;
+			// Get args
+			thArgs *args = NULL;
+			thArgs *last_arg = NULL;
 
-			ERR(process_type(self, &ret_type));
+			if (CURRENT.kind == thOpenParenTk) {
+				NEXT;
+
+				while (CURRENT.kind != thCloseParenTk) {
+					thToken indentifier;
+
+					if (CURRENT.kind != thIdentifierTk) {
+						report(CURRENT.location, "Found %s while looking for fn arg name", token_strkind(CURRENT.kind));
+						return 2;
+					}
+					else
+						indentifier = CURRENT;
+					NEXT;
+
+					thTypeNode *type;
+					thArgs *arg;
+
+					ERR(process_type(self, &type));
+					ERR(node_args_create(indentifier, type, &arg));
+
+					// Linked list append
+					last_arg = args == NULL
+						? (args = arg)
+						: (last_arg->next = arg);
+
+					if (CURRENT.kind == thCommaTk) {
+						NEXT;
+					}
+					else if (CURRENT.kind != thCloseParenTk) {
+						report(CURRENT.location, "Found %s while looking for comma or fn args end", token_strkind(CURRENT.kind));
+						return 2;
+					}
+				}
+
+				if (CURRENT.kind != thCloseParenTk) {
+					report(CURRENT.location, "Found %s while looking for fn args end", token_strkind(CURRENT.kind));
+					return 2;
+				}
+				NEXT;
+			}
+
+			// Get return type
+			thTypeNode *ret;
+
+			ERR(process_type(self, &ret));
 
 			// Get body
 			thNode *body = NULL;
@@ -111,7 +191,7 @@ static thERR primary(thParser *self, thNode **node) {
 			}
 
 			// Make node
-			ERR(node_fn_create(ret_type, body, node));
+			ERR(node_fn_create(args, ret, body, node));
 			break;
 
 		case thOpenBraceTk:
