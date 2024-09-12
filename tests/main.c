@@ -153,7 +153,7 @@ int main(void) {
 	char literal[] =
 		"local a u8 = 12 + 4"
 		""
-		"local b fn(u8, u8) u8 | i8 = fn(a u8, b u8) u8 { a < c }";
+		"local b fn(u8, u8) u8 = fn(a u8, b u8) u8 { a < c }";
 		/*"local b fn(u8) u8 = fn(c u8) u8 {"*/
 		/*	"a < c and a or c"*/
 		/*"}";*/

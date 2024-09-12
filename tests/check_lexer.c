@@ -106,7 +106,7 @@ START_TEST (test_symbols) {
 	puts("--- test_symbols ---");
 	testi = 0;
 
-	test("+-/,{}()<>&*|", (thToken[]) {
+	test("+-/,{}()<>&*", (thToken[]) {
 		th_token_create(thPlusTk, NULL, 0, 1),
 		th_token_create(thDashTk, NULL, 1, 1),
 		th_token_create(thSlashTk, NULL, 2, 1),
@@ -119,7 +119,6 @@ START_TEST (test_symbols) {
 		th_token_create(thGreaterThanTk, NULL, 9, 1),
 		th_token_create(thAmpersandTk, NULL, 10, 1),
 		th_token_create(thAsteriskTk, NULL, 11, 1),
-		th_token_create(thPipeTk, NULL, 12, 1),
 		th_token_create(thEOFTk, NULL, 13, 1)
 	});
 

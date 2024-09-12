@@ -19,7 +19,7 @@
 	T(EqualsTo) T(Diff)              \
                                    \
 	T(Ampersand) T(Asterisk)         \
-	T(Pipe) T(Equals)                \
+	T(Equals)                        \
                                    \
 	/* Literals */                   \
 	T(Identifier)                    \

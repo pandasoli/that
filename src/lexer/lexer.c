@@ -96,7 +96,6 @@ static thERR lex(thLexer *self, thToken *token) {
 
 		case '&': NEXT; kind = thAmpersandTk; break;
 		case '*': NEXT; kind = thAsteriskTk; break;
-		case '|': NEXT; kind = thPipeTk; break;
 
 		default: {
 			thStrBuilder buf;

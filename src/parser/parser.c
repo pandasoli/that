@@ -33,76 +33,61 @@ static thERR primary(thParser *self, thNode **node);
 static thERR process_type(thParser *self, thTypeNode **node) {
 	thERR err;
 
-	*node = NULL;
-	thTypeNode *last_node;
-	thTypeNode *new = NULL;
+	switch (CURRENT.kind) {
+		case thIdentifierTk:
+			ERR(node_identifier_create(CURRENT, node));
+			NEXT;
+			break;
 
-	while (1) {
-		switch (CURRENT.kind) {
-			case thIdentifierTk:
-				ERR(node_identifier_create(CURRENT, &new));
+		case thFnKw:
+			NEXT;
+
+			// Get args
+			thArgs *args = NULL;
+			thArgs *last_arg = NULL;
+
+			if (CURRENT.kind == thOpenParenTk) {
 				NEXT;
-				break;
 
-			case thFnKw:
-				NEXT;
+				while (CURRENT.kind != thCloseParenTk) {
+					thTypeNode *type;
+					thArgs *arg;
 
-				// Get args
-				thArgs *args = NULL;
-				thArgs *last_arg = NULL;
+					ERR(process_type(self, &type));
+					ERR(node_args_create((thToken) {}, type, &arg));
 
-				if (CURRENT.kind == thOpenParenTk) {
-					NEXT;
+					// Linked list append
+					last_arg = args == NULL
+						? (args = arg)
+						: (last_arg->next = arg);
 
-					while (CURRENT.kind != thCloseParenTk) {
-						thTypeNode *type;
-						thArgs *arg;
-
-						ERR(process_type(self, &type));
-						ERR(node_args_create((thToken) {}, type, &arg));
-
-						// Linked list append
-						last_arg = args == NULL
-							? (args = arg)
-							: (last_arg->next = arg);
-
-						if (CURRENT.kind == thCommaTk) {
-							NEXT;
-						}
-						else if (CURRENT.kind != thCloseParenTk) {
-							report(CURRENT.location, "Found %s while looking for comma or fn args end", token_strkind(CURRENT.kind));
-							return 2;
-						}
+					if (CURRENT.kind == thCommaTk) {
+						NEXT;
 					}
-
-					if (CURRENT.kind != thCloseParenTk) {
-						report(CURRENT.location, "Found %s while looking for fn args end", token_strkind(CURRENT.kind));
+					else if (CURRENT.kind != thCloseParenTk) {
+						report(CURRENT.location, "Found %s while looking for comma or fn args end", token_strkind(CURRENT.kind));
 						return 2;
 					}
-					NEXT;
 				}
 
-				thTypeNode *ret;
+				if (CURRENT.kind != thCloseParenTk) {
+					report(CURRENT.location, "Found %s while looking for fn args end", token_strkind(CURRENT.kind));
+					return 2;
+				}
+				NEXT;
+			}
 
-				// TODO: what if it's nothing?
-				// Add NEXT if it's nothing
-				ERR(process_type(self, &ret));
-				ERR(node_fn_create(args, ret, NULL, &new));
-				break;
+			thTypeNode *ret;
 
-			default:
-				report(CURRENT.location, "%s isn't identified as a type", token_strkind(CURRENT.kind));
-				return 2;
-		}
-
-		// Linked list append
-		last_node = *node == NULL
-			? (*node = new)
-			: (last_node->next = new);
-
-		if (CURRENT.kind != thPipeTk)
+			// TODO: what if it's nothing?
+			// Add NEXT if it's nothing
+			ERR(process_type(self, &ret));
+			ERR(node_fn_create(args, ret, NULL, node));
 			break;
-		NEXT;
+
+		default:
+			report(CURRENT.location, "%s isn't identified as a type", token_strkind(CURRENT.kind));
+			return 2;
 	}
 
 	return 0;
