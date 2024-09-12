@@ -77,17 +77,16 @@ static thERR process_type(thParser *self, thTypeNode **node) {
 				NEXT;
 			}
 
-			thTypeNode *ret;
+			// Get return type
+			thTypeNode *ret = NULL;
 
-			// TODO: what if it's nothing?
-			// Add NEXT if it's nothing
 			ERR(process_type(self, &ret));
+
+			// Make node
 			ERR(node_fn_create(args, ret, NULL, node));
 			break;
 
-		default:
-			report(CURRENT.location, "%s isn't identified as a type", token_strkind(CURRENT.kind));
-			return 2;
+		default: {}
 	}
 
 	return 0;
@@ -157,7 +156,7 @@ static thERR primary(thParser *self, thNode **node) {
 			}
 
 			// Get return type
-			thTypeNode *ret;
+			thTypeNode *ret = NULL;
 
 			ERR(process_type(self, &ret));
 
