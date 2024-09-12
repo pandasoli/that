@@ -1,7 +1,7 @@
 # That Language
 
 ## Expressions
-Everything in **That** is an expression, there are no statements.  
+Everything in **That** is an expression.  
 If an expression that doesn't fit in the last one is found, a next one is created.
 
 ```lua
@@ -32,11 +32,11 @@ greather > than
 equals == to
 different != from
 ```
-These operators only return `0` (false) or `1` (true).  
+These operators return `0` or `1`.  
 And only values of the same type can be compared.
 
 ### Logical operators
-```
+```lua
 not 0   -- 1
 not 1   -- 0
 ```
@@ -70,7 +70,7 @@ imAVariable = 13
 ### Data Types
 
 **That** is statically typed, and very strict,
-but even so it doesn't understand that an `i8` fits within an `i32`,
+so that it doesn't understand that an `i8` fits within an `i32`,
 so use `as` to change a literal's type.
 ```lua
 local a ui7 = 12 as ui7
@@ -78,20 +78,8 @@ local a ui7 = 12 as ui7
 
 - Numbers
 
-    Literal numbers are always `i32`.  
-    And floats are also valid.
-
-- Unions -- `|`
-
-    Use this to give many types to a variable.
-    ```lua
-    local a ui7 = 2 as ui7
-
-    local name ptr | ui8 = 0
-    name = &a
-    name = a          -- Invalid
-    name = a as ui8
-    ```
+    Literal integer numbers are `i32`, 
+    and floats are `float32`.
 
 - Pointers -- `ptr`
 
@@ -103,34 +91,17 @@ local a ui7 = 12 as ui7
 
     Pointer operations are allowed, it's very useful for structs and arrays implementation.
 
-- Tuples -- `(<type>, <type>, ...)`
-
-    Tuples unlike arrays, are imutable,
-    and were made with a way of returning multiple values of a function in mind.
-    ```lua
-    local divide = fn(a i32, b i32) (i32, error) {
-        a == 0 or b == 0 and {
-            return (0, 1)
-        }
-
-        (a / b, 0)
-    }
-    ```
-
 - Custom types
 
-    You can use this to store new custom types.  
-    Create a range of numbers with `...` inside a tuple.
+    You can use this to store new custom types.
     ```lua
     type bool (1, 0)                      -- Boolean
-    type bool 1 | 0                       -- also works
 
     type i7 (-128...127)                  -- ASCII character
     type ui8 (0...255)                    -- Unsigned 8-bit integer
     type i32 (-2147483648...2147483647)   -- 32-bit integer
     type ui32 (0...4294967295)            -- Unsigned 32-bit integer
     ```
-    Types are not overwritable!
 
 
 ## Control Flow
@@ -155,12 +126,7 @@ or {
 
 ## Functions
 ```rs
-local function = fn(a i32, b i32) i32
-```
-Just like in **C** functions can be declared before its definition.
-
-```rs
-local function = fn(a i32, b i32) i64 {
+local function fn(i32, i32) i64 = fn(a i32, b i32) i64 {
     return a + b
 }
 ```
@@ -177,9 +143,9 @@ import greetings (hello, hi)
 Use `pub` to give external access to local declarations.
 ```lua
 pub local a ui7 = 0
-pub type A i32 | nil
+pub type A i32
 
-pub local print = fn() {
+pub local print = fn {
     -- "a's value is %d\n"
     local f ptr = create_arr(97, 39, 115, 32, 118, 97, 108, 117, 101, 32, 105, 115, 32, 37, 100, 10)
     printf(f, a)
