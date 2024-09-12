@@ -188,6 +188,7 @@ static thERR primary(thParser *self, thNode **node) {
 					report(CURRENT.location, "Found %s while looking for the end of fn's body", token_strkind(CURRENT.kind));
 					return 2;
 				}
+				NEXT;
 			}
 
 			// Make node
