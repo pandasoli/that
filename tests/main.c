@@ -64,6 +64,8 @@ void print_node(thNode *node, int lindent) {
 	switch (node->kind) {
 		case thNumberNk:     printf("\e[2m%.*s\e[m", (int) node->number.location.len,     node->number.literal);     break;
 		case thIdentifierNk: printf("\e[3m%.*s\e[m", (int) node->identifier.location.len, node->identifier.literal); break;
+		case thReferenceNk: printf("&\e[3m%.*s\e[m", (int) node->reference.location.len, node->reference.literal); break;
+		case thDereferenceNk: printf("*\e[3m%.*s\e[m", (int) node->dereference.location.len, node->dereference.literal); break;
 
 		case thFnNk:
 			printf("\e[90mfn\e[m");
@@ -152,6 +154,7 @@ void print_diags(thERR err) {
 int main(void) {
 	char literal[] =
 		"local a u8 = 12 + 4"
+		"local b ptr = &a "
 		""
 		"local b fn(u8, u8) u8 = fn(a u8, b u8) u8 { a < c }";
 		/*"local b fn(u8) u8 = fn(c u8) u8 {"*/

@@ -5,6 +5,8 @@
 #define TH_NODE_KINDS_LIST(N) \
 	N(Number)                   \
 	N(Identifier)               \
+	N(Reference)                \
+	N(Dereference)              \
 	N(Fn)                       \
 	N(Binary)                   \
 	N(Unary)                    \
@@ -23,6 +25,8 @@ typedef struct thNode thTypeNode; // reuse
 
 typedef thToken thNumberNode;
 typedef thToken thIdentifierNode;
+typedef thToken thReferenceNode;
+typedef thToken thDereferenceNode;
 
 typedef struct thArgs thArgs;
 struct thArgs {
@@ -66,6 +70,8 @@ struct thNode {
 		thUnaryNode unary;
 		thNumberNode number;
 		thIdentifierNode identifier;
+		thReferenceNode reference;
+		thDereferenceNode dereference;
 		thFnNode fn;
 		thAssignNode assign;
 	};

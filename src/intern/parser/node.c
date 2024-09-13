@@ -13,12 +13,14 @@ thERR node_type_create(thTypeNode *type, thNode **out) {
 	}
 
 	switch ((res->kind = type->kind)) {
-		case thNumberNk:     res->number     = type->number;     break;
-		case thIdentifierNk: res->identifier = type->identifier; break;
-		case thFnNk:         res->fn         = type->fn;         break;
-		case thBinaryNk:     res->binary     = type->binary;     break;
-		case thUnaryNk:      res->unary      = type->unary;      break;
-		case thAssignNk:     res->assign     = type->assign;     break;
+		case thNumberNk:      res->number      = type->number;      break;
+		case thIdentifierNk:  res->identifier  = type->identifier;  break;
+		case thReferenceNk:   res->reference   = type->reference;   break;
+		case thDereferenceNk: res->dereference = type->dereference; break;
+		case thFnNk:          res->fn          = type->fn;          break;
+		case thBinaryNk:      res->binary      = type->binary;      break;
+		case thUnaryNk:       res->unary       = type->unary;       break;
+		case thAssignNk:      res->assign      = type->assign;      break;
 	}
 
 	*out = res;
@@ -116,6 +118,22 @@ thERR node_identifier_create(thToken identifier, thNode **out) {
 	return 0;
 }
 
+thERR node_reference_create(char deref, thToken identifier, thNode **out) {
+	thNode node = deref
+		? (thNode) { thDereferenceNk, .dereference = identifier }
+		: (thNode) { thReferenceNk, .reference = identifier };
+
+	thNode *res = malloc(sizeof *res);
+	if (res == NULL) {
+		report_intern("malloc(%zu) returned NULL on %s", sizeof *res, __func__);
+		return 1;
+	}
+
+	memcpy(res, &node, sizeof *res);
+	*out = res;
+
+	return 0;
+}
 
 thERR node_number_create(thToken val, thNode **out) {
 	thNode node = { thNumberNk, .number = val };

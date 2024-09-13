@@ -107,6 +107,22 @@ static thERR primary(thParser *self, thNode **node) {
 			NEXT;
 			break;
 
+		case thAmpersandTk:
+		case thAsteriskTk: {
+			char deref = CURRENT.kind == thAsteriskTk;
+			NEXT;
+
+			thToken identifier = CURRENT;
+			NEXT;
+
+			if (identifier.kind != thIdentifierTk) {
+				report(CURRENT.location, "A %s doesn't have an address, only identifiers can be (de)referenced", token_strkind(identifier.kind));
+				return 2;
+			}
+
+			ERR(node_reference_create(deref, identifier, node));
+		} break;
+
 		case thFnKw:
 			NEXT;
 
