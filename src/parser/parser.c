@@ -64,14 +64,12 @@ static thERR process_type(thParser *self, thTypeNode **node) {
 					if (CURRENT.kind == thCommaTk) {
 						NEXT;
 					}
-					else if (CURRENT.kind != thCloseParenTk) {
-						report(CURRENT.location, "Found %s while looking for comma or fn args end", token_strkind(CURRENT.kind));
-						return 2;
-					}
+					else if (CURRENT.kind != thCloseParenTk)
+						break;
 				}
 
 				if (CURRENT.kind != thCloseParenTk) {
-					report(CURRENT.location, "Found %s while looking for fn args end", token_strkind(CURRENT.kind));
+					report(CURRENT.location, "Found %s while looking for comma or fn args end", token_strkind(CURRENT.kind));
 					return 2;
 				}
 				NEXT;
@@ -133,15 +131,8 @@ static thERR primary(thParser *self, thNode **node) {
 			if (CURRENT.kind == thOpenParenTk) {
 				NEXT;
 
-				while (CURRENT.kind != thCloseParenTk) {
-					thToken indentifier;
-
-					if (CURRENT.kind != thIdentifierTk) {
-						report(CURRENT.location, "Found %s while looking for fn arg name", token_strkind(CURRENT.kind));
-						return 2;
-					}
-					else
-						indentifier = CURRENT;
+				while (CURRENT.kind == thIdentifierTk) {
+					thToken indentifier = CURRENT;
 					NEXT;
 
 					thTypeNode *type;
@@ -158,14 +149,12 @@ static thERR primary(thParser *self, thNode **node) {
 					if (CURRENT.kind == thCommaTk) {
 						NEXT;
 					}
-					else if (CURRENT.kind != thCloseParenTk) {
-						report(CURRENT.location, "Found %s while looking for comma or fn args end", token_strkind(CURRENT.kind));
-						return 2;
-					}
+					else
+						break;
 				}
 
 				if (CURRENT.kind != thCloseParenTk) {
-					report(CURRENT.location, "Found %s while looking for fn args end", token_strkind(CURRENT.kind));
+					report(CURRENT.location, "Found %s while looking for comma or fn args end", token_strkind(CURRENT.kind));
 					return 2;
 				}
 				NEXT;
