@@ -48,7 +48,7 @@ static thERR lex(thLexer *self, thToken *token) {
 	char *literal = NULL;
 
 	switch (CURRENT) {
-		case   0: NEXT; kind = EOFTk; break;
+		case   0: NEXT; kind = EOITk; break;
 
 		// Symbols
 		case '+': NEXT; kind = PlusTk; break;

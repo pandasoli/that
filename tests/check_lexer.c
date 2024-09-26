@@ -58,7 +58,7 @@ static void test_tokens(thLexer *lex, thToken *tokens) {
 
 		i++;
 	}
-	while (actual.kind != EOFTk && expected.kind != EOFTk);
+	while (actual.kind != EOITk && expected.kind != EOITk);
 }
 
 /*
@@ -120,7 +120,7 @@ START_TEST (test_symbols) {
 		th_token_create(AmpersandTk, NULL, 10, 1),
 		th_token_create(AsteriskTk, NULL, 11, 1),
 		th_token_create(PipeTk, NULL, 12, 1),
-		th_token_create(EOFTk, NULL, 13, 1)
+		th_token_create(EOITk, NULL, 13, 1)
 	});
 
 	test("===!==", (thToken[]) {
@@ -128,7 +128,7 @@ START_TEST (test_symbols) {
 		th_token_create(EqualsTk, NULL, 2, 1),
 		th_token_create(DiffTk, NULL, 3, 2),
 		th_token_create(EqualsTk, NULL, 5, 1),
-		th_token_create(EOFTk, NULL, 6, 1)
+		th_token_create(EOITk, NULL, 6, 1)
 	});
 }
 END_TEST
@@ -140,57 +140,57 @@ START_TEST (test_numbers) {
 	char *literal = "0123456789";
 	test(literal, (thToken[]) {
 		th_token_create(IntTk, literal, 0, 10),
-		th_token_create(EOFTk, NULL, 10, 1)
+		th_token_create(EOITk, NULL, 10, 1)
 	});
 
 	literal = "123456789012345678890";
 	test(literal, (thToken[]) {
 		th_token_create(IntTk, literal, 0, 21),
-		th_token_create(EOFTk, NULL, 21, 1)
+		th_token_create(EOITk, NULL, 21, 1)
 	});
 
 	literal = "0";
 	test(literal, (thToken[]) {
 		th_token_create(IntTk, literal, 0, 1),
-		th_token_create(EOFTk, NULL, 1, 1)
+		th_token_create(EOITk, NULL, 1, 1)
 	});
 
 	literal = "1";
 	test(literal, (thToken[]) {
 		th_token_create(IntTk, literal, 0, 1),
-		th_token_create(EOFTk, NULL, 1, 1)
+		th_token_create(EOITk, NULL, 1, 1)
 	});
 
 	literal = "23";
 	test(literal, (thToken[]) {
 		th_token_create(IntTk, literal, 0, 2),
-		th_token_create(EOFTk, NULL, 2, 1)
+		th_token_create(EOITk, NULL, 2, 1)
 	});
 
 	literal = "8";
 	test(literal, (thToken[]) {
 		th_token_create(IntTk, literal, 0, 1),
-		th_token_create(EOFTk, NULL, 1, 1)
+		th_token_create(EOITk, NULL, 1, 1)
 	});
 
 	literal = ".123";
 	test(literal, (thToken[]) {
 		th_token_create(UnknownTk, literal, 0, 1),
 		th_token_create(IntTk, literal, 1, 3),
-		th_token_create(EOFTk, NULL, 4, 1)
+		th_token_create(EOITk, NULL, 4, 1)
 	});
 
 	literal = "123.456";
 	test(literal, (thToken[]) {
 		th_token_create(FloatTk, literal, 0, 7),
-		th_token_create(EOFTk, NULL, 7, 1)
+		th_token_create(EOITk, NULL, 7, 1)
 	});
 
 	literal = ".1.2";
 	test(literal, (thToken[]) {
 		th_token_create(UnknownTk, literal, 0, 1),
 		th_token_create(FloatTk, literal, 1, 3),
-		th_token_create(EOFTk, NULL, 4, 1)
+		th_token_create(EOITk, NULL, 4, 1)
 	});
 }
 END_TEST
@@ -202,43 +202,43 @@ START_TEST (test_identifiers) {
 	char *literal = "abc";
 	test(literal, (thToken[]) {
 		th_token_create(IdentifierTk, literal, 0, 3),
-		th_token_create(EOFTk, NULL, 3, 1)
+		th_token_create(EOITk, NULL, 3, 1)
 	});
 
 	literal = "a12";
 	test(literal, (thToken[]) {
 		th_token_create(IdentifierTk, literal, 0, 3),
-		th_token_create(EOFTk, NULL, 3, 1)
+		th_token_create(EOITk, NULL, 3, 1)
 	});
 
 	literal = "a__";
 	test(literal, (thToken[]) {
 		th_token_create(IdentifierTk, literal, 0, 3),
-		th_token_create(EOFTk, NULL, 3, 1)
+		th_token_create(EOITk, NULL, 3, 1)
 	});
 
 	literal = "a_34";
 	test(literal, (thToken[]) {
 		th_token_create(IdentifierTk, literal, 0, 4),
-		th_token_create(EOFTk, NULL, 4, 1)
+		th_token_create(EOITk, NULL, 4, 1)
 	});
 
 	literal = "a34_";
 	test(literal, (thToken[]) {
 		th_token_create(IdentifierTk, literal, 0, 4),
-		th_token_create(EOFTk, NULL, 4, 1)
+		th_token_create(EOITk, NULL, 4, 1)
 	});
 
 	literal = "_a3";
 	test(literal, (thToken[]) {
 		th_token_create(IdentifierTk, literal, 0, 3),
-		th_token_create(EOFTk, NULL, 3, 1)
+		th_token_create(EOITk, NULL, 3, 1)
 	});
 
 	literal = "_4v";
 	test(literal, (thToken[]) {
 		th_token_create(IdentifierTk, literal, 0, 3),
-		th_token_create(EOFTk, NULL, 3, 1)
+		th_token_create(EOITk, NULL, 3, 1)
 	});
 }
 END_TEST
@@ -250,70 +250,70 @@ START_TEST (test_keywords) {
 	test("import",
 		(thToken[]) {
 			th_token_create(ImportKw, NULL, 0, 6),
-			th_token_create(EOFTk, NULL, 6, 1)
+			th_token_create(EOITk, NULL, 6, 1)
 		});
 
 	char *literal = "aimport";
 	test(literal, (thToken[]) {
 		th_token_create(IdentifierTk, literal, 0, 7),
-		th_token_create(EOFTk, NULL, 7, 1)
+		th_token_create(EOITk, NULL, 7, 1)
 	});
 
 	literal = "importa";
 	test(literal, (thToken[]) {
 		th_token_create(IdentifierTk, literal, 0, 7),
-		th_token_create(EOFTk, NULL, 7, 1)
+		th_token_create(EOITk, NULL, 7, 1)
 	});
 
 	literal = "impor";
 	test(literal, (thToken[]) {
 		th_token_create(IdentifierTk, literal, 0, 5),
-		th_token_create(EOFTk, NULL, 5, 1)
+		th_token_create(EOITk, NULL, 5, 1)
 	});
 
 	test("pub", (thToken[]) {
 		th_token_create(PubKw, NULL, 0, 3),
-		th_token_create(EOFTk, NULL, 3, 1)
+		th_token_create(EOITk, NULL, 3, 1)
 	});
 
 	test("local", (thToken[]) {
 		th_token_create(LocalKw, NULL, 0, 5),
-		th_token_create(EOFTk, NULL, 5, 1)
+		th_token_create(EOITk, NULL, 5, 1)
 	});
 
 	test("type", (thToken[]) {
 		th_token_create(TypeKw, NULL, 0, 4),
-		th_token_create(EOFTk, NULL, 4, 1)
+		th_token_create(EOITk, NULL, 4, 1)
 	});
 
 	test("as", (thToken[]) {
 		th_token_create(AsKw, NULL, 0, 2),
-		th_token_create(EOFTk, NULL, 2, 1)
+		th_token_create(EOITk, NULL, 2, 1)
 	});
 
 	test("not", (thToken[]) {
 		th_token_create(NotKw, NULL, 0, 3),
-		th_token_create(EOFTk, NULL, 3, 1)
+		th_token_create(EOITk, NULL, 3, 1)
 	});
 
 	test("and", (thToken[]) {
 		th_token_create(AndKw, NULL, 0, 3),
-		th_token_create(EOFTk, NULL, 3, 1)
+		th_token_create(EOITk, NULL, 3, 1)
 	});
 
 	test("or", (thToken[]) {
 		th_token_create(OrKw, NULL, 0, 2),
-		th_token_create(EOFTk, NULL, 2, 1)
+		th_token_create(EOITk, NULL, 2, 1)
 	});
 
 	test("fn", (thToken[]) {
 		th_token_create(FnKw, NULL, 0, 2),
-		th_token_create(EOFTk, NULL, 2, 1)
+		th_token_create(EOITk, NULL, 2, 1)
 	});
 
 	test("return", (thToken[]) {
 		th_token_create(ReturnKw, NULL, 0, 6),
-		th_token_create(EOFTk, NULL, 6, 1)
+		th_token_create(EOITk, NULL, 6, 1)
 	});
 }
 END_TEST
@@ -323,12 +323,12 @@ START_TEST (test_comments) {
 	testi = 0;
 
 	test("-- abc", (thToken[]) {
-		th_token_create(EOFTk, NULL, 6, 1)
+		th_token_create(EOITk, NULL, 6, 1)
 	});
 
 	test("- -- this is a dash token :)", (thToken[]) {
 		th_token_create(DashTk, NULL, 0, 1),
-		th_token_create(EOFTk, NULL, 28, 1)
+		th_token_create(EOITk, NULL, 28, 1)
 	});
 
 	char *literal = "abc == 2 {\n-- Do something here idk\n}";
@@ -338,11 +338,11 @@ START_TEST (test_comments) {
 		th_token_create(IntTk, literal, 7, 1),
 		th_token_create(OpenBraceTk, NULL, 9, 1),
 		th_token_create(CloseBraceTk, NULL, 36, 1),
-		th_token_create(EOFTk, NULL, 37, 1)
+		th_token_create(EOITk, NULL, 37, 1)
 	});
 
 	test("-- +-/,{}()<>===!=&*|", (thToken[]) {
-		th_token_create(EOFTk, NULL, 21, 1)
+		th_token_create(EOITk, NULL, 21, 1)
 	});
 }
 END_TEST
@@ -353,19 +353,19 @@ START_TEST (test_whitespaces) {
 
 	test("\t-\t", (thToken[]) {
 		th_token_create(DashTk, NULL, 1, 1),
-		th_token_create(EOFTk, NULL, 3, 1)
+		th_token_create(EOITk, NULL, 3, 1)
 	});
 
 	char *literal = "\nab\n";
 	test(literal, (thToken[]) {
 		th_token_create(IdentifierTk, literal, 1, 2),
-		th_token_create(EOFTk, NULL, 4, 1)
+		th_token_create(EOITk, NULL, 4, 1)
 	});
 
 	literal = " 123 ";
 	test(literal, (thToken[]) {
 		th_token_create(IntTk, literal, 1, 3),
-		th_token_create(EOFTk, NULL, 5, 1)
+		th_token_create(EOITk, NULL, 5, 1)
 	});
 }
 END_TEST

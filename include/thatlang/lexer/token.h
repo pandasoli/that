@@ -7,7 +7,7 @@
 
 #define TH_TOKEN_KINDS_LIST(T, KW) \
 	T(Unknown)                       \
-	T(EOF)                           \
+	T(EOI)                           \
                                    \
 	/* Symbols */                    \
 	T(Plus) T(Dash) T(Slash)         \
