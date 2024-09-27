@@ -375,7 +375,7 @@ static thERR parse(thParser *self, thNode **node) {
 	thNode *last_node = NULL;
 	*node = NULL;
 
-	while (CURRENT.kind != thEOFTk) {
+	while (CURRENT.kind != thEOITk) {
 		thNode *new;
 
 		ERR(expr(self, &new));
